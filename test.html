@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Campus Nav</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.pw{display:flex;justify-content:center;padding:20px 0;background:transparent}
+.phone{width:360px;height:780px;background:#F5F5F5;border-radius:44px;border:8px solid #222;box-shadow:0 24px 48px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+.phone-status-bar{position:absolute;top:0;left:0;right:0;height:28px;padding:0 24px;display:flex;justify-content:space-between;align-items:center;z-index:100;font-size:11px;font-weight:600;color:#fff;pointer-events:none;transition:none}
+.phone-status-bar.dark-text{color:#000}
+.status-icons{display:flex;align-items:center;gap:4px}
+.status-icons i{font-size:12px}
+
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;transition:none}
+.scr.hid{transform:translateX(100%);opacity:0;pointer-events:none}
+.back-btn{width:32px;height:32px;border-radius:50%;background:#F5F5F5;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.back-btn i{font-size:16px;color:#000}
+.pri-btn{width:100%;background:#333;color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
+.bnav{position:absolute;bottom:0;left:0;right:0;height:66px;background:#fff;border-top:1px solid #DDD;display:flex;align-items:center;justify-content:space-around;padding:0 6px 6px;z-index:50}
+.ni{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 10px;cursor:pointer;flex:1}
+.ni i{font-size:21px;color:#888}
+.ni span{font-size:10px;color:#888;font-weight:500}
+.ni.act i,.ni.act span{color:#000}
+
+#home{background:#F5F5F5}
+.h-hdr{background:#333;padding:42px 18px 22px;border-bottom-left-radius:22px;border-bottom-right-radius:22px;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.h-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.h-appname{font-size:18px;font-weight:700;color:#fff;letter-spacing:0.5px;font-family:'Segoe UI', sans-serif;}
+.h-settbtn{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:18px;padding:5px 11px;color:#fff;font-size:12px;cursor:pointer}
+.h-greet{font-size:22px;font-weight:700;color:#fff;margin-bottom:2px;font-family:'Helvetica Neue', sans-serif;}
+.h-sub{font-size:12px;color:rgba(255,255,255,.8); font-family:'Trebuchet MS', sans-serif;}
+.h-body{flex:1;overflow-y:auto;padding:16px 14px 76px;scrollbar-width:none}
+.h-body::-webkit-scrollbar{display:none}
+.sec-t{font-size:14px;font-weight:700;color:#000;margin-bottom:9px;font-family:'Arial', sans-serif; letter-spacing: 0.3px;}
+.up-next{background:#fff;border-radius:14px;padding:14px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);border-left:4px solid #333}
+.un-time{font-size:11px;font-weight:700;color:#333;margin-bottom:2px;font-family:'Georgia', serif;}
+.un-name{font-size:15px;font-weight:700;color:#000;margin-bottom:6px;font-family:'Tahoma', sans-serif;}
+.un-loc{display:flex;align-items:center;gap:4px;font-size:11px;color:#666;margin-bottom:11px;font-family:'Lucida Sans', sans-serif;}
+.un-loc i{font-size:13px;color:#666}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.tool-card{background:#fff;border-radius:13px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:none}
+.tool-card:active{transform:scale(0.96)}
+.tool-ico{font-size:24px;color:#000;height:32px;display:flex;align-items:center;justify-content:center}
+.tool-nm{font-size:12px;font-weight:700;color:#000;font-family:'Franklin Gothic Medium', sans-serif;}
+.tool-sm{font-size:10px;color:#888;font-family:'Gill Sans', sans-serif;}
+.srch-card{background:#fff;border-radius:13px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:16px}
+.srch-row{display:flex;align-items:center;gap:7px;padding:11px 13px;border-bottom:1px solid #eee}
+.srch-row i{font-size:15px;color:#888}
+.srch-row input{border:none;outline:none;flex:1;font-size:13px;background:transparent;color:#000}
+.srch-row input::placeholder{color:#aaa}
+.srch-res{display:none;max-height:220px;overflow-y:auto}
+.srch-res.show{display:block}
+.srch-item{display:flex;align-items:center;gap:10px;padding:10px 13px;cursor:pointer;border-bottom:1px solid #f8f8f8}
+.srch-item:last-child{border-bottom:none}
+.srch-item:hover{background:#f8f8f8}
+.sri-ico{width:32px;height:32px;border-radius:8px;background:#E0E0E0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sri-ico i{font-size:16px;color:#000}
+.sri-nm{font-size:13px;font-weight:700;color:#000}
+.sri-loc{font-size:11px;color:#888}
+.gloss-card{background:#fff;border-radius:13px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.gloss-res{padding:11px 13px;display:block}
+.gloss-res.show{display:block}
+.g-term{font-size:13px;font-weight:700;color:#000;margin-bottom:2px;font-family:'Cambria', serif;}
+.g-def{font-size:11px;color:#555;line-height:1.5;font-family:'Consolas', monospace;}
+
+.map-canvas{width:100%;height:180px;position:relative;overflow:hidden}
+.map-canvas svg{width:100%;height:100%}
+.map-phase-bar{display:flex;background:#F5F5F5;border-bottom:1px solid #DDD}
+.mpb{flex:1;padding:8px 4px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:#888;border:none;background:transparent}
+.mpb.act{color:#000;border-bottom:2px solid #000;background:#fff}
+.map-svg-card{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);overflow:hidden;margin-bottom:12px}
+
+.od-step-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.od-step-ttl{font-size:12px;font-weight:700;color:#000}
+.od-step-ct{font-size:11px;color:#888}
+.od-prog{display:flex;gap:3px;margin-bottom:10px}
+.odp{flex:1;height:3px;border-radius:3px;background:#E0E0E0}
+.odp.dn{background:#333}
+.odp.cu{background:#333}
+.od-step-body{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.od-dir-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.od-dir-ico.walk{background:#E8E8E8}
+.od-dir-ico.turn{background:#E8E8E8}
+.od-dir-ico.arrive{background:#E8E8E8}
+.od-dir-ico i{font-size:18px}
+.od-dir-ico.walk i{color:#333}
+.od-dir-ico.turn i{color:#333}
+.od-dir-ico.arrive i{color:#333}
+.od-instr{font-size:13px;font-weight:600;color:#000;line-height:1.4}
+.od-dist{font-size:11px;color:#888;margin-top:3px}
+.od-arrived-banner{background:#E8E8E8;border:1px solid #CCC;border-radius:10px;padding:12px;display:none;align-items:center;gap:10px;margin-top:8px}
+.od-arrived-banner.show{display:flex}
+.arr-big{font-size:13px;font-weight:700;color:#000}
+.arr-sm{font-size:11px;color:#555;margin-top:2px}
+.switch-indoor-btn{width:100%;background:#333;color:#fff;border:none;border-radius:28px;padding:12px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;margin-top:10px}
+.switch-indoor-btn i{font-size:15px}
+
+.meta-row{display:flex;gap:5px;flex-wrap:wrap}
+.mc{display:flex;align-items:center;gap:4px;font-size:11px;color:#555;background:#fafafa;border:.5px solid #ccc;border-radius:18px;padding:3px 8px}
+.mc i{font-size:12px}
+.mc.hl{background:#E0E0E0;border-color:#aaa;color:#000}
+.opts-row{display:flex;gap:5px}
+.obt{display:flex;align-items:center;gap:4px;font-size:11px;border:.5px solid #ccc;background:#fafafa;border-radius:18px;padding:4px 9px;cursor:pointer;color:#555}
+.obt.sel{background:#E0E0E0;border-color:#aaa;color:#000;font-weight:700}
+.obt i{font-size:12px}
+.ftabs{display:flex;background:#eee;border:.5px solid #ccc;border-radius:8px;overflow:hidden}
+.ftab{flex:1;padding:7px 3px;font-size:10px;font-weight:500;border:none;background:transparent;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;gap:3px;position:relative}
+.ftab.act{background:#fafafa;color:#000}
+.ftab.act::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:#000}
+.fvbadge{font-size:9px;background:#E0E0E0;color:#000;border-radius:3px;padding:1px 4px;font-weight:600}
+.ftab.act .fvbadge{background:#000;color:#fff}
+.map-card{background:#fafafa;border:.5px solid #ccc;border-radius:10px;overflow:hidden;padding:10px}
+.fgrid{display:grid;gap:6px;width:100%;grid-template-columns:repeat(4,1fr)}
+.rm{position:relative;border-radius:5px;border:1.5px solid #aaa;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;min-height:54px;cursor:pointer;background:#fafafa}
+.rm.retail{background:#fff}
+.rm.study{background:#fff;border-color:#aaa}
+.rm.admin{background:#f5f5f5}
+.rm.dest{background:#E8E8E8;border-color:#000;border-width:2px}
+.rm.start{background:#E0E0E0;border-color:#000;border-width:2px}
+.rm.active-s{box-shadow:0 0 0 3px rgba(0,0,0,.5);transform:scale(1.05);z-index:3}
+.rm.hl{box-shadow:0 0 0 2px rgba(0,0,0,.25)}
+.rm-nm{font-size:9px;font-weight:700;color:#000;text-align:center}
+.rm-sub{font-size:7px;color:#555;text-align:center;margin-top:1px}
+.rb{position:absolute;top:2px;right:2px;width:13px;height:13px;border-radius:50%;font-size:7px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff}
+.rb.s{background:#000}.rb.d{background:#000}
+.fsep{display:flex;align-items:center;gap:5px;margin:5px 0}
+.fsep-line{flex:1;height:1px;background:#ccc}
+.fsep-lbl{font-size:8px;color:#888;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:3px}
+.fsep-lbl i{font-size:10px}
+.lift-hint{background:#f5f5f5;border:.5px solid #ccc;border-radius:6px;padding:7px 10px;font-size:10px;color:#333;display:none;margin-top:5px;line-height:1.5}
+.lift-hint.show{display:block}
+.sp{flex:1;height:2.5px;border-radius:3px;background:#ccc}
+.sp.dn{background:#000}
+.sp.cu{background:#000}
+.s-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-ico.move{background:#E0E0E0}.s-ico.lift{background:#E0E0E0}.s-ico.arrive{background:#E8E8E8}
+.s-ico i{font-size:14px}
+.s-ico.move i{color:#000}.s-ico.lift i{color:#000}.s-ico.arrive i{color:#000}
+.s-instr{font-size:12px;font-weight:500;color:#000;line-height:1.4}
+.s-det{font-size:10px;color:#555;margin-top:2px}
+
+.phase-pill{display:flex;align-items:center;gap:0;background:#fff;border-radius:20px;border:.5px solid #ddd;overflow:hidden;margin-bottom:12px;font-size:11px}
+.ph{flex:1;padding:7px 6px;text-align:center;font-weight:600;color:#aaa;display:flex;align-items:center;justify-content:center;gap:4px}
+.ph.done{color:#000;background:#E8E8E8}
+.ph.active{color:#fff;background:#333}
+.ph i{font-size:12px}
+.ph-sep{width:1px;background:#ddd;height:30px;flex-shrink:0}
+
+.gps-banner{background:#fff;border-radius:10px;padding:10px 12px;font-size:11px;color:#333;margin-bottom:14px;display:flex;align-items:center;gap:8px;line-height:1.4;border:1px solid #ddd; font-family:'Calibri', sans-serif;}
+.lang-pill{display:flex;background:rgba(255,255,255,.2);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.3)}
+.lang-pill button{border:none;background:transparent;color:rgba(255,255,255,.7);font-size:10px;font-weight:700;padding:4px 9px;cursor:pointer}
+.lang-pill button.act{background:rgba(255,255,255,.25);color:#fff}
+.srch-item.hide{display:none}
+.gloss-list{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.gloss-item{background:#fff;border-radius:8px;padding:9px 12px;border-left:3px solid #333;margin-bottom:6px}
+
+#translate{background:#000;display:flex;flex-direction:column}
+.tr-hdr{padding:42px 14px 10px;display:flex;align-items:center;gap:10px;flex-shrink:0;background:linear-gradient(to bottom,rgba(0,0,0,.85),rgba(0,0,0,0));position:absolute;top:0;left:0;right:0;z-index:20;pointer-events:none}
+.tr-hdr>*{pointer-events:auto}
+.tr-hdr h2{color:#fff;font-size:15px;font-weight:700;flex:1}
+.lens-viewport{flex:1;position:relative;overflow:hidden;background:#111}
+#webcamVideo{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;display:none}
+.lens-no-cam{position:absolute;inset:0;z-index:2;background:#222;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.lens-no-cam i{font-size:40px;color:rgba(255,255,255,.25)}
+.lens-no-cam span{font-size:11px;color:rgba(255,255,255,.4);text-align:center;padding:0 30px;line-height:1.5}
+.lens-bracket{position:absolute;z-index:5;pointer-events:none}
+.lens-bracket.tl{top:60px;left:20px;border-top:3px solid #fff;border-left:3px solid #fff;width:28px;height:28px;border-radius:2px 0 0 0}
+.lens-bracket.tr{top:60px;right:20px;border-top:3px solid #fff;border-right:3px solid #fff;width:28px;height:28px;border-radius:0 2px 0 0}
+.lens-bracket.bl{bottom:72px;left:20px;border-bottom:3px solid #fff;border-left:3px solid #fff;width:28px;height:28px;border-radius:0 0 0 2px}
+.lens-bracket.br{bottom:72px;right:20px;border-bottom:3px solid #fff;border-right:3px solid #fff;width:28px;height:28px;border-radius:0 0 2px 0}
+.lens-sweep{position:absolute;left:20px;right:20px;height:2px;background:rgba(255,255,255,.5);z-index:6;animation:lensSweep 2s ease-in-out infinite;display:none}
+@keyframes lensSweep{0%{top:60px;opacity:1}85%{opacity:1}100%{top:calc(100% - 72px);opacity:0}}
+.lens-word-box{position:absolute;z-index:7;border:1.5px solid rgba(255,255,255,.7);border-radius:3px;background:rgba(255,255,255,.08);pointer-events:none}
+.lens-ar-bubble{position:absolute;z-index:8;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.6);border-radius:10px;padding:7px 11px;min-width:90px;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.lens-ar-original{font-size:8px;color:rgba(255,255,255,.5);font-weight:600;letter-spacing:.4px;margin-bottom:2px;text-transform:uppercase}
+.lens-ar-translated{font-size:12px;color:#fff;font-weight:700;line-height:1.3}
+.lens-bottom-bar{position:absolute;bottom:66px;left:0;right:0;z-index:15;background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,0));padding:20px 16px 10px;display:flex;align-items:center;justify-content:center;gap:10px}
+.lens-status{font-size:10px;color:rgba(255,255,255,.6);text-align:center;letter-spacing:.3px}
+.lens-status b{color:#fff;font-weight:700}
+.lens-detected-pill{position:absolute;bottom:130px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);backdrop-filter:blur(4px);border-radius:20px;padding:5px 14px;display:flex;align-items:center;gap:6px;white-space:nowrap;z-index:16;animation:fadeSlide .4s ease}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.lens-detected-pill span{font-size:10px;color:rgba(255,255,255,.7)}
+.lens-detected-pill b{font-size:11px;color:#fff;font-weight:700;letter-spacing:.5px}
+
+#mapscreen{background:#F5F5F5}
+
+/* Minimalist crowd effect for map cards */
+.map-card-crowd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 4px;
+  background: #fafafa;
+  border: 0.5px solid #ccc;
+  border-radius: 10px;
+}
+.map-card-crowd .mc-mini {
+  font-size: 8px;
+  padding: 2px 6px;
+  background: #fff;
+  border: 0.5px solid #ddd;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.map-card-crowd .mc-mini i {
+  font-size: 9px;
+  margin-right: 2px;
+}
+</style>
+</head>
+<body>
+
+<div class="pw">
+<div class="phone">
+
+  <div class="phone-status-bar">
+    <span class="status-time">09:41</span>
+    <div class="status-icons">
+      <i class="ti ti-antenna-bars-4"></i>
+      <i class="ti ti-wifi"></i>
+      <i class="ti ti-battery-4"></i>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="scr" id="home">
+    <div class="h-hdr">
+      <div class="h-top">
+        <div class="h-appname">Campus Nav</div>
+        <!-- <div style="display:flex;gap:6px;align-items:center">
+          <div class="lang-pill">
+            <button class="act" id="langEn" onclick="setLang('en')">EN</button>
+            <button id="langMy" onclick="setLang('my')">MY</button>
+          </div>
+          <div class="h-settbtn" onclick="toggleLang()"><i class="ti ti-language"></i></div>
+        </div> -->
+      </div>
+      <div class="h-greet">Hi, Alex! 👋</div>
+      <div class="h-sub">Main Library · University Campus</div>
+    </div>
+    <div class="h-body">
+      <div class="sec-t">Up Next</div>
+      <div class="up-next">
+        <div class="un-time">11:00 AM - 12:30 PM</div>
+        <div style="font-size:15px;font-weight:700;color:#000;margin-bottom:5px;font-family:'Tahoma', sans-serif;">Mathematics 201 (MATH201)</div>
+        <div class="un-loc"><i class="ti ti-map-pin"></i> Lecture Hall A · Room 210, Level 2</div>
+        <button class="pri-btn" onclick="routeTo('room210')"><i class="ti ti-navigation"></i> Route Me to Class</button>
+      </div>
+      <div class="gps-banner"><i class="ti ti-info-circle" style="font-size:18px;flex-shrink:0"></i><span id="gpsBanner">Indoor navigation available for campus buildings.</span></div>
+      
+      <div class="sec-t" id="hardFindLbl">Campus Glossary &amp; Search</div>
+      <div class="gloss-card" style="margin-bottom: 16px;">
+        <div class="srch-row"><i class="ti ti-search"></i><input type="text" id="gi" placeholder="Search: hall, wing, room..." oninput="searchGloss(this.value)"/></div>
+        <div class="gloss-res" id="gr"><div class="gloss-list" id="glossList"></div></div>
+      </div>
+      
+      <div class="sec-t">Quick Tools</div>
+      <div class="tools-grid">
+        <div class="tool-card" onclick="openMapScreen()"><div class="tool-ico"><i class="ti ti-map-2"></i></div><div class="tool-nm">Navigate</div><div class="tool-sm">Outdoor + Indoor</div></div>
+        <div class="tool-card" onclick="showScr('translate')"><div class="tool-ico"><i class="ti ti-camera"></i></div><div class="tool-nm">Translate Sign</div><div class="tool-sm">Scan &amp; translate</div></div>
+      </div>
+    </div>
+    <div class="bnav" id="bnavHome">
+      <div class="ni act" data-tab="home" onclick="navTab('home')"><i class="ti ti-home"></i><span>Home</span></div>
+      <div class="ni" data-tab="translate" onclick="navTab('translate')"><i class="ti ti-language"></i><span>Translate</span></div>
+      <div class="ni" data-tab="mapscreen" onclick="navTab('mapscreen')"><i class="ti ti-map"></i><span>Map</span></div>
+    </div>
+  </div>
+
+  <!-- TRANSLATE SIGN -->
+  <div class="scr hid" id="translate">
+    <div class="tr-hdr">
+      <button class="back-btn" style="background:rgba(255,255,255,.15);width:32px;height:32px;" onclick="navTab('home')"><i class="ti ti-arrow-left" style="color:#fff"></i></button>
+      <h2>Scan Translate</h2>
+      <!-- <div style="display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);border-radius:14px;padding:3px 9px;">
+        <i class="ti ti-language" style="font-size:11px;color:rgba(255,255,255,.7);"></i>
+        <select id="trTargetLang" onchange="changeTranslateLang(this.value)" style="background:transparent;border:none;color:#fff;font-size:10px;font-weight:700;outline:none;cursor:pointer;">
+          <option value="en" style="color:#000;">English</option>
+          <option value="my" style="color:#000;">Malay</option>
+          <option value="zh" style="color:#000;">Chinese</option>
+          <option value="ja" style="color:#000;">Japanese</option>
+          <option value="ta" style="color:#000;">Tamil</option>
+        </select>
+      </div> -->
+    </div>
+
+    <div class="lens-viewport" id="lensViewport">
+      <video id="webcamVideo" autoplay playsinline></video>
+      <div class="lens-no-cam" id="lensNoCam">
+        <i class="ti ti-scan"></i>
+        <span>Point your camera at a signboard to translate.</span>
+      </div>
+      <div class="lens-bracket tl"></div>
+      <div class="lens-bracket tr"></div>
+      <div class="lens-bracket bl"></div>
+      <div class="lens-bracket br"></div>
+      <div class="lens-sweep" id="lensSweep"></div>
+      <div id="lensArLayer" style="position:absolute;inset:0;z-index:7;pointer-events:none;"></div>
+      <div class="lens-detected-pill" id="lensDetectedPill" style="display:none;">
+        <span>Detected:</span>
+        <b id="lensDetectedWord"></b>
+      </div>
+      <div class="lens-bottom-bar">
+        <div class="lens-status" id="lensStatusText">Scanning for signboards…</div>
+      </div>
+    </div>
+
+    <div class="bnav" id="bnavTr" style="background:rgba(0,0,0,.85);border-top:1px solid rgba(255,255,255,.08);">
+      <div class="ni" data-tab="home" onclick="navTab('home')"><i class="ti ti-home" style="color:#888;"></i><span style="color:#888;">Home</span></div>
+      <div class="ni act" data-tab="translate" onclick="navTab('translate')"><i class="ti ti-language" style="color:#fff;"></i><span style="color:#fff;">Translate</span></div>
+      <div class="ni" data-tab="mapscreen" onclick="navTab('mapscreen')"><i class="ti ti-map" style="color:#888;"></i><span style="color:#888;">Map</span></div>
+    </div>
+  </div>
+
+  <!-- MAP TAB SCREEN -->
+  <div class="scr hid" id="mapscreen">
+    <div style="background:transparent; padding: 42px 14px 10px; flex-shrink: 0; z-index: 10; position: relative;">
+      <!-- Minimalist crowded card -->
+      <div class="map-card-crowd" style="margin-bottom: 8px;">
+        <div class="mc-mini"><i class="ti ti-building"></i> Hall A</div>
+        <div class="mc-mini"><i class="ti ti-door"></i> Rm 208</div>
+        <div class="mc-mini"><i class="ti ti-door"></i> Rm 209</div>
+        <div class="mc-mini"><i class="ti ti-door"></i> Rm 210</div>
+        <div class="mc-mini"><i class="ti ti-door"></i> Rm 211</div>
+        <div class="mc-mini"><i class="ti ti-door"></i> Rm 212</div>
+        <div class="mc-mini"><i class="ti ti-door"></i> Rm 213</div>
+        <div class="mc-mini"><i class="ti ti-door"></i> Rm 214</div>
+        <div class="mc-mini"><i class="ti ti-door"></i> Rm 215</div>
+        <div class="mc-mini"><i class="ti ti-building"></i> Science</div>
+        <div class="mc-mini"><i class="ti ti-device-laptop"></i> Lab 3</div>
+        <div class="mc-mini"><i class="ti ti-books"></i> Library</div>
+      </div>
+      
+      <div class="srch-card" style="box-shadow: 0 4px 12px rgba(0,0,0,0.12); border-radius: 24px; margin-bottom: 8px;">
+        <div class="srch-row" style="padding: 10px 16px;">
+          <i class="ti ti-search" style="color: #000; font-size: 16px;"></i>
+          <input type="text" id="mapSearchInput" placeholder="Search campus room or building..." oninput="mapSearchFn(this.value)" onkeydown="mapSearchKeyDown(event)" style="font-size: 13px;"/>
+          <button onclick="clearMapSearch()" style="width:24px; height:24px; background:transparent; border:none; display:none; cursor:pointer;" id="mapSearchClearBtn"><i class="ti ti-x" style="font-size:14px;color:#888;"></i></button>
+        </div>
+        <div class="srch-res" id="mapSearchRes" style="max-height: 180px; border-top: 1px solid #eee;">
+          <div class="srch-item" data-keys="lecture hall a" onclick="selectMapDest('hallA')"><div class="sri-ico"><i class="ti ti-building"></i></div><div><div class="sri-nm">Lecture Hall A</div><div class="sri-loc">Central Lecture Complex</div></div></div>
+          <div class="srch-item" data-keys="room 208" onclick="selectMapDest('room208')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">Room 208</div><div class="sri-loc">Lecture Room · Level 2</div></div></div>
+          <div class="srch-item" data-keys="room 209" onclick="selectMapDest('room209')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">Room 209</div><div class="sri-loc">Lecture Room · Level 2</div></div></div>
+          <div class="srch-item" data-keys="room 210" onclick="selectMapDest('room210')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">Room 210</div><div class="sri-loc">Lecture Room · Level 2</div></div></div>
+          <div class="srch-item" data-keys="room 211" onclick="selectMapDest('room211')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">Room 211</div><div class="sri-loc">Lecture Room · Level 2</div></div></div>
+          <div class="srch-item" data-keys="room 212" onclick="selectMapDest('room212')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">Room 212</div><div class="sri-loc">Lecture Room · Level 3</div></div></div>
+          <div class="srch-item" data-keys="room 213" onclick="selectMapDest('room213')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">Room 213</div><div class="sri-loc">Lecture Room · Level 3</div></div></div>
+          <div class="srch-item" data-keys="room 214" onclick="selectMapDest('room214')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">Room 214</div><div class="sri-loc">Lecture Room · Level 3</div></div></div>
+          <div class="srch-item" data-keys="room 215" onclick="selectMapDest('room215')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">Room 215</div><div class="sri-loc">Lecture Room · Level 3</div></div></div>
+          <div class="srch-item" data-keys="science wing lab" onclick="selectMapDest('scienceWing')"><div class="sri-ico" style="background:#E0E0E0"><i class="ti ti-building" style="color:#000"></i></div><div><div class="sri-nm">Science Wing</div><div class="sri-loc">Science & Technology Building</div></div></div>
+          <div class="srch-item" data-keys="science wing lab 3" onclick="selectMapDest('wingLab3')"><div class="sri-ico" style="background:#E0E0E0"><i class="ti ti-device-laptop" style="color:#000"></i></div><div><div class="sri-nm">Science Wing · Lab 3</div><div class="sri-loc">Computer Lab 3 · Level 1</div></div></div>
+          <div class="srch-item" data-keys="library main" onclick="selectMapDest('mainLibrary')"><div class="sri-ico"><i class="ti ti-books"></i></div><div><div class="sri-nm">Main Library</div><div class="sri-loc">University Library</div></div></div>
+          <div class="srch-item no-match-item hide" style="pointer-events:none;justify-content:center;color:#888;font-size:11px;padding:12px 6px;">
+            <i class="ti ti-search-off" style="font-size:14px;color:#aaa;margin-right:5px;"></i> No locations found
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:6px; overflow-x:auto; scrollbar-width:none;" class="map-filters-row">
+        <button class="obt" onclick="filterMapCategory('bk', this)" style="background:#fff; border-radius:14px; padding:4px 10px; font-size:11px; white-space:nowrap; border:1px solid #ddd; display:flex; align-items:center; gap:3px;"><i class="ti ti-door-enter" style="color:#000;"></i> Classrooms</button>
+        <button class="obt" onclick="filterMapCategory('faculty', this)" style="background:#fff; border-radius:14px; padding:4px 10px; font-size:11px; white-space:nowrap; border:1px solid #ddd; display:flex; align-items:center; gap:3px;"><i class="ti ti-building" style="color:#000;"></i> Buildings</button>
+        <button class="obt" onclick="filterMapCategory('library', this)" style="background:#fff; border-radius:14px; padding:4px 10px; font-size:11px; white-space:nowrap; border:1px solid #ddd; display:flex; align-items:center; gap:3px;"><i class="ti ti-books" style="color:#000;"></i> Services</button>
+      </div>
+    </div>
+
+    <div class="map-viewport" style="flex: 1; position: relative;">
+      <div id="mapDirectionBanner" style="display:none; position:absolute; top:10px; left:14px; right:14px; background:#333; color:#fff; border-radius:12px; padding:10px 14px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:5; align-items:center; gap:10px;">
+        <div style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center;"><i class="ti ti-navigation" id="bannerDirIcon" style="font-size:14px;"></i></div>
+        <div style="flex:1;">
+          <div style="font-size:12px; font-weight:700;" id="bannerDirText">Route Active</div>
+          <div style="font-size:10px; opacity:0.8;" id="bannerSubText">Follow path on map below</div>
+        </div>
+      </div>
+
+      <div style="width:100%; height:100%; position:relative;">
+        <svg id="gMapsOutdoorSvg" viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%; object-fit:cover; display:block;">
+          <rect width="340" height="180" fill="#fff"/>
+          <rect x="30" y="60" width="80" height="50" rx="4" fill="#E8E8E8" stroke="#aaa" stroke-width="1"/>
+          <text x="70" y="82" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Main Library</text>
+          <circle cx="70" cy="104" r="4" fill="#000"/>
+          <text x="70" y="116" text-anchor="middle" font-size="6" fill="#000" font-weight="700">START</text>
+          
+          <rect x="240" y="25" width="80" height="50" rx="4" fill="#E0E0E0" stroke="#aaa" stroke-width="1"/>
+          <text x="280" y="47" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Lecture Hall A</text>
+          <text x="280" y="57" text-anchor="middle" font-size="6" fill="#333">Central Lecture</text>
+          <text x="280" y="66" text-anchor="middle" font-size="6" fill="#333">Complex</text>
+          <circle id="gMapsDkapCircle" cx="280" cy="73" r="4" fill="#000"/>
+          <text id="gMapsDkapText" x="280" y="85" text-anchor="middle" font-size="6" fill="#000" font-weight="700">DEST</text>
+
+          <rect x="240" y="105" width="80" height="50" rx="4" fill="#E0E0E0" stroke="#aaa" stroke-width="1"/>
+          <text x="280" y="127" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Science Wing</text>
+          <text x="280" y="137" text-anchor="middle" font-size="6" fill="#333">Science &amp; Tech</text>
+          <circle id="gMapsFsktmCircle" cx="280" cy="151" r="4" fill="#000" style="display:none;"/>
+          <text id="gMapsFsktmText" x="280" y="162" text-anchor="middle" font-size="6" fill="#000" font-weight="700" style="display:none;">DEST</text>
+
+          <rect x="0" y="108" width="340" height="10" fill="#ccc" opacity=".5"/>
+          <text x="170" y="116" text-anchor="middle" font-size="7" fill="#555">Main Road</text>
+          <rect x="130" y="40" width="80" height="10" fill="#ccc" opacity=".5"/>
+          <text x="170" y="48" text-anchor="middle" font-size="7" fill="#555">North Road</text>
+          
+          <polyline id="gMapsRouteLine" points="" fill="none" stroke="#000" stroke-width="2.5" stroke-dasharray="5,3"/>
+          <circle id="gMapsDotPos" cx="70" cy="104" r="5" fill="#000" stroke="#fff" stroke-width="2"/>
+        </svg>
+
+        <svg id="gMapsIndoorSvg" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;object-fit:cover;display:none;">
+          <rect width="340" height="200" fill="#fff"/>
+          <rect x="5" y="14" width="330" height="178" rx="6" fill="#fafafa" stroke="#aaa" stroke-width="1"/>
+          <text x="170" y="10" text-anchor="middle" font-size="7" fill="#888" font-weight="600">LECTURE HALL A FLOOR PLAN</text>
+          <text x="10" y="22" text-anchor="start" font-size="6" fill="#000" font-weight="700">LEVEL 3 · Rooms 212-215</text>
+          <rect id="mBox_bk12" x="12" y="24" width="72" height="32" rx="3" fill="#fff" stroke="#aaa" stroke-width="1"/>
+          <text x="48" y="43" text-anchor="middle" font-size="8" fill="#000" font-weight="600">Room 212</text>
+          <rect id="mBox_bk13" x="92" y="24" width="72" height="32" rx="3" fill="#fff" stroke="#aaa" stroke-width="1"/>
+          <text x="128" y="43" text-anchor="middle" font-size="8" fill="#000" font-weight="600">Room 213</text>
+          <rect id="mBox_bk14" x="172" y="24" width="72" height="32" rx="3" fill="#fff" stroke="#aaa" stroke-width="1"/>
+          <text x="208" y="43" text-anchor="middle" font-size="8" fill="#000" font-weight="600">Room 214</text>
+          <rect id="mBox_bk15" x="252" y="24" width="72" height="32" rx="3" fill="#fff" stroke="#aaa" stroke-width="1"/>
+          <text x="288" y="43" text-anchor="middle" font-size="8" fill="#000" font-weight="600">Room 215</text>
+          <text x="10" y="61" text-anchor="start" font-size="6" fill="#000" font-weight="700">LEVEL 2 · Rooms 208-211</text>
+          <rect id="mBox_bk08" x="12" y="62" width="72" height="32" rx="3" fill="#fff" stroke="#aaa" stroke-width="1"/>
+          <text x="48" y="81" text-anchor="middle" font-size="8" fill="#000" font-weight="600">Room 208</text>
+          <rect id="mBox_bk09" x="92" y="62" width="72" height="32" rx="3" fill="#fff" stroke="#aaa" stroke-width="1"/>
+          <text x="128" y="81" text-anchor="middle" font-size="8" fill="#000" font-weight="600">Room 209</text>
+          <rect id="mBox_bk10" x="172" y="62" width="72" height="32" rx="3" fill="#fff" stroke="#aaa" stroke-width="1"/>
+          <text x="208" y="81" text-anchor="middle" font-size="8" fill="#000" font-weight="600">Room 210</text>
+          <rect id="mBox_bk11" x="252" y="62" width="72" height="32" rx="3" fill="#fff" stroke="#aaa" stroke-width="1"/>
+          <text x="288" y="81" text-anchor="middle" font-size="8" fill="#000" font-weight="600">Room 211</text>
+          <line x1="5" y1="99" x2="335" y2="99" stroke="#aaa" stroke-width="1.5"/>
+          <text x="10" y="106" text-anchor="start" font-size="6" fill="#666" font-weight="600">GROUND FLOOR</text>
+          <rect id="mBox_entry" x="12" y="108" width="72" height="52" rx="3" fill="#E0E0E0" stroke="#000" stroke-width="2"/>
+          <text x="48" y="131" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Entrance</text>
+          <text x="48" y="141" text-anchor="middle" font-size="6" fill="#333">Main Door</text>
+          <rect id="mBox_admin" x="92" y="108" width="72" height="52" rx="3" fill="#f5f5f5" stroke="#aaa" stroke-width="1"/>
+          <text x="128" y="137" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Admin</text>
+          <rect id="mBox_lift" x="172" y="108" width="72" height="52" rx="3" fill="#f5f5f5" stroke="#aaa" stroke-width="1"/>
+          <text x="208" y="131" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Lift</text>
+          <text x="208" y="141" text-anchor="middle" font-size="6" fill="#666">Lobby</text>
+          <rect id="mBox_stairs" x="252" y="108" width="72" height="52" rx="3" fill="#f5f5f5" stroke="#aaa" stroke-width="1"/>
+          <text x="288" y="137" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Stairs</text>
+          <circle id="gMapsIndoorDestPin" cx="208" cy="24" r="4" fill="#000" stroke="#fff" stroke-width="1.5"/>
+          <text id="gMapsIndoorDestPinLabel" x="208" y="40" text-anchor="middle" font-size="8" fill="#000" font-weight="700">Room 210</text>
+          <text id="gMapsIndoorDestPinText" x="208" y="50" text-anchor="middle" font-size="6" fill="#333">DESTINATION</text>
+          <polyline id="gMapsIndoorRoute" points="" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="4,3"/>
+          <circle id="gMapsIndoorDot" cx="48" cy="134" r="4" fill="#000" stroke="#fff" stroke-width="1.5"/>
+        </svg>
+
+        <svg id="gMapsIndoorSvgFsktm" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;object-fit:cover;display:none;">
+          <rect width="340" height="200" fill="#fff"/>
+          <rect x="5" y="14" width="330" height="178" rx="6" fill="#fafafa" stroke="#aaa" stroke-width="1"/>
+          <text x="170" y="10" text-anchor="middle" font-size="7" fill="#000" font-weight="700">SCIENCE WING FLOOR PLAN</text>
+          <text x="10" y="22" text-anchor="start" font-size="6" fill="#000" font-weight="700">LEVEL 1 — LABORATORIES</text>
+          <rect id="fsktm_mBox_lab1" x="12" y="24" width="72" height="32" rx="3" fill="#E0E0E0" stroke="#000" stroke-width="1"/>
+          <text x="48" y="39" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Lab 1</text>
+          <rect id="fsktm_mBox_lab2" x="92" y="24" width="72" height="32" rx="3" fill="#E0E0E0" stroke="#000" stroke-width="1"/>
+          <text x="128" y="39" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Lab 2</text>
+          <rect id="fsktm_mBox_lab3" x="172" y="24" width="72" height="32" rx="3" fill="#E0E0E0" stroke="#000" stroke-width="1"/>
+          <text x="208" y="39" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Lab 3</text>
+          <rect id="fsktm_mBox_sem" x="252" y="24" width="72" height="32" rx="3" fill="#fff" stroke="#aaa" stroke-width="1"/>
+          <text x="288" y="39" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Seminar</text>
+          <line x1="5" y1="99" x2="335" y2="99" stroke="#aaa" stroke-width="1.5"/>
+          <text x="10" y="106" text-anchor="start" font-size="6" fill="#000" font-weight="600">GROUND FLOOR</text>
+          <rect id="fsktm_mBox_lobby" x="12" y="108" width="110" height="52" rx="3" fill="#E8E8E8" stroke="#000" stroke-width="2"/>
+          <text x="67" y="131" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Lobby</text>
+          <rect id="fsktm_mBox_admin" x="130" y="108" width="72" height="52" rx="3" fill="#f5f5f5" stroke="#aaa" stroke-width="1"/>
+          <text x="166" y="137" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Admin</text>
+          <rect id="fsktm_mBox_cafe" x="210" y="108" width="52" height="52" rx="3" fill="#fff" stroke="#aaa" stroke-width="1"/>
+          <text x="236" y="131" text-anchor="middle" font-size="7" fill="#000" font-weight="700">Café</text>
+          <rect id="fsktm_mBox_lift" x="270" y="108" width="30" height="52" rx="3" fill="#f5f5f5" stroke="#aaa" stroke-width="1"/>
+          <text x="285" y="133" text-anchor="middle" font-size="6" fill="#000" font-weight="700">Lift</text>
+          <rect id="fsktm_mBox_stairs" x="304" y="108" width="26" height="52" rx="3" fill="#f5f5f5" stroke="#aaa" stroke-width="1"/>
+          <text x="317" y="133" text-anchor="middle" font-size="6" fill="#000" font-weight="700">Stairs</text>
+          <circle id="gMapsFsktmDestPin" cx="208" cy="24" r="4" fill="#000" stroke="#fff" stroke-width="1.5" style="display:none"/>
+          <text id="gMapsFsktmDestPinLabel" x="208" y="20" text-anchor="middle" font-size="7" fill="#000" font-weight="700" style="display:none">Lab 3</text>
+          <text id="gMapsFsktmDestPinText" x="208" y="13" text-anchor="middle" font-size="6" fill="#333" style="display:none">DESTINATION</text>
+          <polyline id="gMapsFsktmRoute" points="" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="4,3"/>
+          <circle id="gMapsFsktmDot" cx="67" cy="134" r="4" fill="#000" stroke="#fff" stroke-width="1.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="map-bottom-sheet" id="mapBottomSheet" style="background:#fff; border-top-left-radius:20px; border-top-right-radius:20px; box-shadow: 0 -4px 16px rgba(0,0,0,0.12); padding:16px 14px 76px; flex-shrink: 0; z-index: 10;">
+      <div id="mSheetDefault">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="font-size:15px; font-weight:700; color:#000;">University Campus Map</div>
+          <div style="font-size:11px; background:#E8E8E8; color:#000; padding:2px 8px; border-radius:6px; font-weight:600;">Active</div>
+        </div>
+        <div style="font-size:12px; color:#666; line-height:1.4; margin-bottom:12px;">Search for rooms, laboratories, or buildings to get turn‑by‑turn directions.</div>
+        <button class="pri-btn" onclick="focusMapSearch()"><i class="ti ti-search"></i> Search a Destination</button>
+      </div>
+
+      <div id="mSheetPlanning" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+          <div>
+            <div style="font-size:15px; font-weight:800; color:#000;" id="plDestTitle">Main Library → Room 210</div>
+            <div style="font-size:11px; color:#888; margin-top:2px;" id="plTimeDist">11 min (850 m) · 🚶 Walking</div>
+          </div>
+          <button class="back-btn" onclick="exitMapNav()" style="background:#eaeaea; width:28px; height:28px;"><i class="ti ti-x" style="font-size:12px;"></i></button>
+        </div>
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <button class="obt sel" id="plBtnWalk" onclick="setPlMode('walk')" style="font-size:11px; padding:6px 12px; border-radius:12px; border:1px solid #ddd;"><i class="ti ti-walk"></i> Walk</button>
+          <button class="obt" id="plBtnAcc" onclick="setPlMode('acc')" style="font-size:11px; padding:6px 12px; border-radius:12px; border:1px solid #ddd;"><i class="ti ti-wheelchair"></i> Accessible</button>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="pri-btn" onclick="startMapNav()" style="background:#333; flex:1;"><i class="ti ti-navigation"></i> Start Navigation</button>
+        </div>
+      </div>
+
+      <div id="mSheetNavigating" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="font-size:11px; font-weight:700; color:#000;" id="navStepTitle">OUTDOOR PHASE · Step 1 of 11</div>
+          <div style="display:flex; gap:4px;" id="navModeToggles">
+            <button class="obt sel" id="navLiftBtn" onclick="setNavMode('lift')" style="font-size:10px; padding:3px 8px; border-radius:8px; display:none; border:1px solid #ddd;"><i class="ti ti-elevator"></i> Lift</button>
+            <button class="obt" id="navStairsBtn" onclick="setNavMode('stairs')" style="font-size:10px; padding:3px 8px; border-radius:8px; display:none; border:1px solid #ddd;"><i class="ti ti-stairs-up"></i> Stairs</button>
+          </div>
+        </div>
+        <div class="od-prog" id="navProgBar" style="margin-bottom:8px;"></div>
+        <div class="od-step-body" style="margin-bottom:10px;">
+          <div class="od-dir-ico walk" id="navIcoBox" style="width:30px; height:30px; border-radius:8px;"><i class="ti ti-walk" id="navIco" style="font-size:14px;"></i></div>
+          <div style="flex:1;">
+            <div class="od-instr" id="navInstr" style="font-size:12px; font-weight:600;">Exit the parking lot at Main Library</div>
+            <div class="od-dist" id="navDist" style="font-size:10px; color:#888;">Starting point · 30 m</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button id="navBackBtn" onclick="mapNavBack()" style="flex:1; border:1px solid #ccc; border-radius:18px; padding:6px; font-size:11px; cursor:pointer;"><i class="ti ti-chevron-left"></i> Back</button>
+          <button class="pr" id="navNextBtn" onclick="mapNavNext()" style="flex:1; border:1px solid #000; background:#000; color:#fff; border-radius:18px; padding:6px; font-size:11px; cursor:pointer;">Next <i class="ti ti-chevron-right"></i></button>
+          <button onclick="exitMapNav()" style="border:1px solid #666; background:transparent; color:#666; border-radius:18px; padding:6px 12px; font-size:11px; cursor:pointer;"><i class="ti ti-circle-x"></i> Stop</button>
+        </div>
+        <div class="od-arrived-banner" id="navArriveBanner" style="margin-top:8px; display:none; padding:10px; border-radius:8px;">
+          <i class="ti ti-circle-check" style="font-size:20px; color:#000;"></i>
+          <div style="flex:1;">
+            <div class="arr-big" style="font-size:12px; font-weight:700;" id="navArriveTitle">Arrived at Lecture Hall A!</div>
+            <div class="arr-sm" style="font-size:10px; color:#555; margin-top:2px;" id="navArriveSub">Switching to indoor directions...</div>
+          </div>
+        </div>
+        <button class="switch-indoor-btn" id="navSwitchIndoorBtn" onclick="mapSwitchToIndoor()" style="display:none; margin-top:8px; font-size:12px; padding:10px;"><i class="ti ti-building"></i> Continue Indoor Navigation</button>
+        <button id="navBackToOutdoorBtn" onclick="mapSwitchToOutdoor()" style="display:none; width:100%; background:transparent; border:1.5px solid #000; color:#000; border-radius:18px; padding:7px; font-size:11px; cursor:pointer; margin-top:6px; align-items:center; justify-content:center; gap:5px;"><i class="ti ti-arrow-left"></i> Back to Outdoor Route</button>
+      </div>
+    </div>
+
+    <div class="bnav" id="bnavMap">
+      <div class="ni" data-tab="home" onclick="navTab('home')"><i class="ti ti-home"></i><span>Home</span></div>
+      <div class="ni" data-tab="translate" onclick="navTab('translate')"><i class="ti ti-language"></i><span>Translate</span></div>
+      <div class="ni act" data-tab="mapscreen" onclick="navTab('mapscreen')"><i class="ti ti-map"></i><span>Map</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// JavaScript unchanged
+let lang='en',currentDest='room210',navMode='lift',OD_STEPS=[],IN_STEPS=[],odStep=0,inStep=0,liftOn=true,inAutoTimer=null,autoSwitchTimer=null,activePhase='out';
+const rEls={};
+
+const DESTINATIONS={
+  room210:{title:'Main Library → Room 210',outdoorEnd:'Lecture Hall A',indoor:true,room:'Room 210',roomCode:'room210',destLabel:'Room 210 · Level 2 · Lecture Hall A'},
+  room208:{title:'Main Library → Room 208',outdoorEnd:'Lecture Hall A',indoor:true,room:'Room 208',roomCode:'room208',destLabel:'Room 208 · Level 2 · Lecture Hall A'},
+  room209:{title:'Main Library → Room 209',outdoorEnd:'Lecture Hall A',indoor:true,room:'Room 209',roomCode:'room209',destLabel:'Room 209 · Level 2 · Lecture Hall A'},
+  room211:{title:'Main Library → Room 211',outdoorEnd:'Lecture Hall A',indoor:true,room:'Room 211',roomCode:'room211',destLabel:'Room 211 · Level 2 · Lecture Hall A'},
+  room212:{title:'Main Library → Room 212',outdoorEnd:'Lecture Hall A',indoor:true,room:'Room 212',roomCode:'room212',destLabel:'Room 212 · Level 3 · Lecture Hall A'},
+  room213:{title:'Main Library → Room 213',outdoorEnd:'Lecture Hall A',indoor:true,room:'Room 213',roomCode:'room213',destLabel:'Room 213 · Level 3 · Lecture Hall A'},
+  room214:{title:'Main Library → Room 214',outdoorEnd:'Lecture Hall A',indoor:true,room:'Room 214',roomCode:'room214',destLabel:'Room 214 · Level 3 · Lecture Hall A'},
+  room215:{title:'Main Library → Room 215',outdoorEnd:'Lecture Hall A',indoor:true,room:'Room 215',roomCode:'room215',destLabel:'Room 215 · Level 3 · Lecture Hall A'},
+  hallA:{title:'Main Library → Lecture Hall A',outdoorEnd:'Lecture Hall A',indoor:true,room:'Lecture Hall A Entrance',roomCode:'entry',destLabel:'Lecture Hall A · Main Entrance'},
+  scienceWing:{title:'Main Library → Science Wing',outdoorEnd:'Science Wing',indoor:true,room:'Science Wing Lobby',roomCode:'fsktm_lobby',isFsktm:true,destLabel:'Science Wing · Building'},
+  wingLab3:{title:'Main Library → Science Wing Lab 3',outdoorEnd:'Science Wing',indoor:true,room:'Lab 3',roomCode:'fsktm_lab3',isFsktm:true,destLabel:'Lab 3 · Level 1 · Science Wing'},
+  mainLibrary:{title:'You are at the Main Library',outdoorEnd:null,indoor:false,room:'Library',roomCode:null,destLabel:'Main Library'}
+};
+
+const GLOSS={
+  hallA:{term:'Lecture Hall A',termMy:'Lecture Hall A',def:'Central Lecture Complex (Lecture Hall A)',defMy:'Central Lecture Complex'},
+  room210:{term:'Room 210',termMy:'Room 210',def:'Lecture Room 210, Level 2',defMy:'Lecture Room 210'}
+};
+
+const SIGNS={
+  bilik:{my:'ROOM 210',translations:{en:'ROOM 210',my:'ROOM 210',zh:'房间 210',ja:'ルーム 210',ta:'அறை 210'},note:'Lecture Room 210, Level 2',dest:'room210'},
+  tingkat:{my:'LEVEL 2',translations:{en:'LEVEL 2',my:'LEVEL 2',zh:'2 层',ja:'2 階',ta:'நிலை 2'},note:'Floor 2',dest:'room210'},
+  blok:{my:'BLOCK A — HALL A',translations:{en:'BLOCK A — HALL A',my:'BLOCK A — HALL A',zh:'A 栋',ja:'A 棟',ta:'தொகுதி A'},note:'Block A',dest:'hallA'},
+  sayap:{my:'EAST WING',translations:{en:'EAST WING',my:'EAST WING',zh:'东翼',ja:'東ウィング',ta:'கிழக்கு பிரிவு'},note:'East Wing',dest:'room210'}
+};
+
+const OD_STEPS_DKAP=[
+  {icon:'ti-walk',kind:'walk',instr:'Exit the parking lot at Main Library',dist:'Starting point · 30 m',dot:[70,104]},
+  {icon:'ti-arrow-right',kind:'turn',instr:'Turn right toward Main Road',dist:'20 m',dot:[90,104]},
+  {icon:'ti-arrow-left',kind:'turn',instr:'Turn left toward Main Road',dist:'72 m',dot:[110,108]},
+  {icon:'ti-arrow-right',kind:'turn',instr:'Turn right onto Main Road',dist:'59 m',dot:[150,108]},
+  {icon:'ti-arrow-left',kind:'turn',instr:'Turn left onto North Road',dist:'400 m',dot:[170,108]},
+  {icon:'ti-arrow-right',kind:'turn',instr:'Turn right',dist:'18 m',dot:[190,90]},
+  {icon:'ti-arrow-left',kind:'turn',instr:'Turn left',dist:'7 m',dot:[200,70]},
+  {icon:'ti-corner-right-up',kind:'turn',instr:'Slight right',dist:'160 m',dot:[215,60]},
+  {icon:'ti-arrow-left',kind:'turn',instr:'Turn left',dist:'17 m',dot:[250,55]},
+  {icon:'ti-arrow-left',kind:'turn',instr:'Turn left — destination on the right',dist:'160 m',dot:[265,55]},
+  {icon:'ti-flag',kind:'arrive',instr:'Arrived at Lecture Hall A',dist:'University Campus',dot:[280,55]}
+];
+
+const OD_STEPS_FSKTM=[
+  {icon:'ti-walk',kind:'walk',instr:'Exit the parking lot at Main Library',dist:'Starting point · 30 m',dot:[70,104]},
+  {icon:'ti-arrow-right',kind:'turn',instr:'Turn right toward Main Road',dist:'20 m',dot:[90,104]},
+  {icon:'ti-arrow-left',kind:'turn',instr:'Turn left toward Main Road',dist:'72 m',dot:[110,108]},
+  {icon:'ti-arrow-right',kind:'turn',instr:'Turn right onto Main Road',dist:'120 m',dot:[150,108]},
+  {icon:'ti-arrow-right',kind:'turn',instr:'Continue straight on Main Road',dist:'180 m',dot:[170,108]},
+  {icon:'ti-arrow-right',kind:'turn',instr:'Walk past the central intersection',dist:'90 m',dot:[190,108]},
+  {icon:'ti-corner-right-down',kind:'turn',instr:'Slight right toward Science Wing access road',dist:'110 m',dot:[210,120]},
+  {icon:'ti-arrow-left',kind:'turn',instr:'Turn left onto building access lane',dist:'80 m',dot:[230,135]},
+  {icon:'ti-walk',kind:'walk',instr:'Walk toward the main lobby of Science Wing',dist:'40 m',dot:[250,135]},
+  {icon:'ti-flag',kind:'arrive',instr:'Arrived at Science Wing',dist:'University Campus',dot:[280,135]}
+];
+
+const L2=[
+  {id:'room208',name:'Room 208',sub:'Lecture',cls:'retail'},
+  {id:'room209',name:'Room 209',sub:'Lecture',cls:'retail'},
+  {id:'room210',name:'Room 210',sub:'Lecture',cls:'retail'},
+  {id:'room211',name:'Room 211',sub:'Lecture',cls:'retail'},
+  {id:'room212',name:'Room 212',sub:'Lecture',cls:'retail'},
+  {id:'room213',name:'Room 213',sub:'Lecture',cls:'retail'},
+  {id:'room214',name:'Room 214',sub:'Lecture',cls:'retail'},
+  {id:'room215',name:'Room 215',sub:'Lecture',cls:'retail'}
+];
+const GF=[
+  {id:'entry',name:'Entrance',sub:'Main Door',cls:'study start'},
+  {id:'admin',name:'Admin',sub:'Office',cls:'admin'},
+  {id:'lift',name:'Lift',sub:'Lobby',cls:'admin'},
+  {id:'stairs',name:'Stairs',sub:'Ground',cls:'admin'}
+];
+
+let webcamStream = null;
+async function startWebcam() {
+  const video = document.getElementById('webcamVideo');
+  const noCam = document.getElementById('lensNoCam');
+  stopWebcam();
+  try {
+    webcamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    if (video) { video.srcObject = webcamStream; video.style.display = 'block'; }
+    if (noCam) noCam.style.display = 'none';
+  } catch (err) {
+    console.warn('Camera unavailable:', err);
+    if (video) video.style.display = 'none';
+    if (noCam) noCam.style.display = 'flex';
+  }
+  startLensLoop();
+}
+function stopWebcam() {
+  stopLensLoop();
+  if (webcamStream) { webcamStream.getTracks().forEach(track => track.stop()); webcamStream = null; }
+  const video = document.getElementById('webcamVideo');
+  if (video) video.style.display = 'none';
+}
+
+function updateStatusBarTime() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes();
+  h = h < 10 ? '0'+h : h; m = m < 10 ? '0'+m : m;
+  document.querySelectorAll('.status-time').forEach(el => el.textContent = `${h}:${m}`);
+}
+setInterval(updateStatusBarTime, 1000);
+updateStatusBarTime();
+
+function generateIndoorRoute(destId, mode) {
+  const steps = [];
+  const isL2 = ['room208','room209','room210','room211'].includes(destId);
+  const isL3 = ['room212','room213','room214','room215'].includes(destId);
+  const isAcc = mode === 'acc';
+  steps.push({ id:'entry', floor:'G', icon: isAcc ? 'ti-wheelchair' : 'ti-door-enter', kind:'move',
+    instr: isAcc ? 'Enter via accessible ramp at main entrance' : 'Enter Lecture Hall A through the main entrance',
+    det: isAcc ? 'Ground floor · Accessible ramp' : 'Ground floor · Building entrance lobby', dot:[48, 134] });
+  if (destId === 'entry') { steps.push({ id:'entry', floor:'G', icon:'ti-flag', kind:'arrive', instr:'Arrived at Lecture Hall A Entrance!', det:'Ground floor · Entrance lobby area', dot:[48, 118] }); return steps; }
+  steps.push({ id:'admin', floor:'G', icon:'ti-arrow-right', kind:'move', instr:'Walk through lobby, past the Admin office', det:'Corridor hallway', dot:[128, 134] });
+  if (destId === 'admin') { steps.push({ id:'admin', floor:'G', icon:'ti-flag', kind:'arrive', instr:'Arrived at Admin Office!', det:'Ground floor · Admin block', dot:[128, 134] }); return steps; }
+  const exitY = 78;
+  if (mode === 'stairs') {
+    steps.push({ id:'stairs', floor:'G', icon:'ti-stairs-up', kind:'lift', instr:'Take stairs up to Level 2', det:'East staircase lobby', liftShow:true, dot:[288, 134] });
+    steps.push({ id:'stairs', floor:'L2', icon:'ti-door-exit', kind:'move', instr:'Exit stairwell on Level 2', det:'Level 2 corridor', dot:[288, exitY] });
+  } else {
+    steps.push({ id:'lift', floor:'G', icon:'ti-elevator', kind:'lift', instr: isAcc ? 'Take the accessible lift to Level 2' : 'Take the lift to Level 2',
+      det: isAcc ? 'Accessible lift lobby' : 'Corridor lift lobby', liftShow:true, dot:[208, 134] });
+    steps.push({ id:'lift', floor:'L2', icon:'ti-door-exit', kind:'lift', instr:'Exit lift on Level 2', det:'Level 2 lobby', dot:[208, exitY] });
+  }
+  if (isL3) {
+    const transitIco = mode === 'stairs' ? 'ti-stairs-up' : 'ti-elevator';
+    const transitInstr = mode === 'stairs' ? 'Take stairs up one more floor to Level 3' : (isAcc ? 'Take accessible lift up one more floor to Level 3' : 'Take lift up one more floor to Level 3');
+    const transitX = mode === 'stairs' ? 288 : 208;
+    steps.push({ id: mode==='stairs'?'stairs':'lift', floor:'L3', icon:transitIco, kind:'lift', instr:transitInstr, det:'Level 3 lobby', dot:[transitX, 40] });
+  }
+  const coords = {
+    room212:[48,40], room213:[128,40], room214:[208,40], room215:[288,40],
+    room208:[48,78], room209:[128,78], room210:[208,78], room211:[288,78]
+  };
+  const [destX, destY] = coords[destId] || [208, 78];
+  const levelLabel = isL3 ? 'Level 3' : 'Level 2';
+  const destName = destId.replace('room','Room ');
+  const startX = mode === 'stairs' ? 288 : 208;
+  if (isL2) {
+    if (destId === 'room211' && startX !== 288) steps.push({ id:'room211', floor:'L2', icon:'ti-arrow-right', kind:'move', instr:'Walk east — Room 211 is on your left', det:'Level 2 corridor', dot:[288, 78] });
+    else if (destId === 'room210' && startX === 288) steps.push({ id:'room210', floor:'L2', icon:'ti-arrow-left', kind:'move', instr:'Walk west past Room 211', det:'Room 210 is next on your left', dot:[208, 78] });
+    else if (destId === 'room209') { if (startX === 288) steps.push({ id:'room210', floor:'L2', icon:'ti-arrow-left', kind:'move', instr:'Walk west past Room 211 and Room 210', det:'Level 2 corridor', dot:[208, 78] }); steps.push({ id:'room209', floor:'L2', icon:'ti-arrow-left', kind:'move', instr:'Continue west — Room 209 is on your right', det:'Level 2 corridor', dot:[128, 78] }); }
+    else if (destId === 'room208') { steps.push({ id:'room210', floor:'L2', icon:'ti-arrow-left', kind:'move', instr:'Walk west past Room 210', det:'Level 2 corridor', dot:[208, 78] }); steps.push({ id:'room209', floor:'L2', icon:'ti-arrow-left', kind:'move', instr:'Continue past Room 209', det:'Approaching Room 208', dot:[128, 78] }); steps.push({ id:'room208', floor:'L2', icon:'ti-arrow-left', kind:'move', instr:'Room 208 is at the end of the hall', det:'End of Level 2', dot:[48, 78] }); }
+  }
+  if (isL3) {
+    if (destId === 'room215') { if (startX !== 288) steps.push({ id:'room215', floor:'L3', icon:'ti-arrow-right', kind:'move', instr:'Walk east — Room 215 is on your left', det:'Level 3 corridor', dot:[288, 40] }); }
+    else if (destId === 'room214') { if (startX !== 208) steps.push({ id:'room214', floor:'L3', icon:'ti-arrow-left', kind:'move', instr:'Walk west — Room 214 is on your left', det:'Level 3 corridor', dot:[208, 40] }); }
+    else if (destId === 'room213') { steps.push({ id:'room213', floor:'L3', icon:'ti-arrow-left', kind:'move', instr:'Walk west — Room 213 is on your right', det:'Level 3 corridor', dot:[128, 40] }); }
+    else if (destId === 'room212') { if (startX === 288) steps.push({ id:'room213', floor:'L3', icon:'ti-arrow-left', kind:'move', instr:'Walk west past Room 214 and Room 213', det:'Level 3 corridor', dot:[128, 40] }); else steps.push({ id:'room213', floor:'L3', icon:'ti-arrow-left', kind:'move', instr:'Walk west past Room 213', det:'Level 3 corridor', dot:[128, 40] }); steps.push({ id:'room212', floor:'L3', icon:'ti-arrow-left', kind:'move', instr:'Continue west — Room 212 is at the end', det:'End of Level 3', dot:[48, 40] }); }
+  }
+  steps.push({ id:destId, floor:levelLabel.replace(' ',''), icon:'ti-flag', kind:'arrive', instr:`Arrived at ${destName} — Your destination is here!`, det:`${levelLabel} · Lecture Hall A`, dot:[destX, destY - 12] });
+  return steps;
+}
+
+function generateFSKTMIndoorRoute(destId, mode) {
+  const steps = [];
+  steps.push({ id:'fsktm_lobby', floor:'G', icon:'ti-door-enter', kind:'move', instr:'Enter Science Wing through the main entrance lobby', det:'Ground floor · Reception', dot:[67, 134] });
+  if (destId === 'fsktm_lobby') { steps.push({ id:'fsktm_lobby', floor:'G', icon:'ti-flag', kind:'arrive', instr:'Arrived at Science Wing Lobby!', det:'Ground floor · Reception', dot:[67, 118] }); return steps; }
+  steps.push({ id:'fsktm_admin', floor:'G', icon:'ti-arrow-right', kind:'move', instr:'Walk past the Admin office toward the lift/stairs', det:'Ground floor corridor', dot:[166, 134] });
+  if (mode === 'stairs') {
+    steps.push({ id:'fsktm_stairs', floor:'G', icon:'ti-stairs-up', kind:'lift', instr:'Take stairs up to Level 1', det:'East staircase · Science Wing', dot:[317, 134] });
+    steps.push({ id:'fsktm_stairs', floor:'L1', icon:'ti-door-exit', kind:'move', instr:'Exit stairwell on Level 1', det:'Level 1 corridor', dot:[317, 40] });
+  } else {
+    steps.push({ id:'fsktm_lift', floor:'G', icon:'ti-elevator', kind:'lift', instr:'Take the lift to Level 1', det:'Lift lobby', dot:[285, 134] });
+    steps.push({ id:'fsktm_lift', floor:'L1', icon:'ti-door-exit', kind:'lift', instr:'Exit lift on Level 1', det:'Level 1 corridor', dot:[285, 40] });
+  }
+  const labNames = { fsktm_lab1:'Lab 1', fsktm_lab2:'Lab 2', fsktm_lab3:'Lab 3', fsktm_sem:'Seminar Room' };
+  const labCoords = { fsktm_lab1:[48,40], fsktm_lab2:[128,40], fsktm_lab3:[208,40], fsktm_sem:[288,40] };
+  const [dx, dy] = labCoords[destId] || [208, 40];
+  const startX = mode === 'stairs' ? 317 : 285;
+  if (destId === 'fsktm_sem') { steps.push({ id:'fsktm_sem', floor:'L1', icon:'ti-arrow-right', kind:'move', instr:'Turn right — Seminar Room is on your right', det:'Level 1 · East end', dot:[288, 40] }); }
+  else if (destId === 'fsktm_lab3') { if (startX > 208) steps.push({ id:'fsktm_lab3', floor:'L1', icon:'ti-arrow-left', kind:'move', instr:'Walk west — Lab 3 is on your left', det:'Level 1 corridor', dot:[208, 40] }); }
+  else if (destId === 'fsktm_lab2') { steps.push({ id:'fsktm_lab2', floor:'L1', icon:'ti-arrow-left', kind:'move', instr:'Walk west past Lab 3 — Lab 2 is on your left', det:'Level 1 corridor', dot:[128, 40] }); }
+  else if (destId === 'fsktm_lab1') { steps.push({ id:'fsktm_lab2', floor:'L1', icon:'ti-arrow-left', kind:'move', instr:'Walk west past Lab 3 and Lab 2', det:'Level 1 corridor', dot:[128, 40] }); steps.push({ id:'fsktm_lab1', floor:'L1', icon:'ti-arrow-left', kind:'move', instr:'Continue to the end — Lab 1 is on your left', det:'End of Level 1', dot:[48, 40] }); }
+  steps.push({ id:destId, floor:'L1', icon:'ti-flag', kind:'arrive', instr:`Arrived at ${labNames[destId] || 'Lab'} — Your destination is here!`, det:`Level 1 · Science Wing`, dot:[dx, dy - 12] });
+  return steps;
+}
+
+function setLang(l){ lang=l; document.getElementById('langEn').classList.toggle('act',l==='en'); document.getElementById('langMy').classList.toggle('act',l==='my'); document.getElementById('gpsBanner').textContent=l==='en'?'Indoor navigation available for campus buildings.':'Navigasi dalam bangunan tersedia untuk gedung kampus.'; document.getElementById('hardFindLbl').textContent=l==='en'?'Campus Glossary & Search':'Glosari Kampus & Carian'; renderDefaultGlossary(); }
+function toggleLang(){ setLang(lang==='en'?'my':'en'); }
+
+function navTab(id){ showScr(id); document.querySelectorAll('.bnav .ni').forEach(n=>n.classList.toggle('act',n.dataset.tab===id)); }
+
+function showScr(id){
+  if(autoSwitchTimer){clearTimeout(autoSwitchTimer);autoSwitchTimer=null;}
+  if (id === 'translate') { startWebcam(); } else { stopWebcam(); }
+  const statusbar = document.querySelector('.phone-status-bar');
+  if (statusbar) { statusbar.classList.toggle('dark-text', (id==='mapscreen' && (activePhase==='out' && document.getElementById('mSheetNavigating').style.display==='block') || activePhase==='in')); }
+  document.querySelectorAll('.scr').forEach(s=>s.classList.add('hid'));
+  document.getElementById(id).classList.remove('hid');
+  if(id==='mapscreen') { if(document.getElementById('mSheetPlanning').style.display==='none' && document.getElementById('mSheetNavigating').style.display==='none') exitMapNav(); }
+}
+
+function renderDefaultGlossary(){ const list=document.getElementById('glossList'), box=document.getElementById('gr'); if(!list||!box)return; list.innerHTML='<div style="font-size:11px;color:#888;padding:6px 0;">Type an acronym to see its meaning.</div>'; box.classList.add('show'); }
+function searchGloss(v){
+  const q=v.trim().toLowerCase(), list=document.getElementById('glossList'), box=document.getElementById('gr');
+  if(!q){ list.innerHTML='<div style="font-size:11px;color:#888;padding:6px 0;">Type an acronym to see its meaning.</div>'; box.classList.add('show'); return; }
+  const matches=Object.entries(GLOSS).filter(([k,m])=>k.includes(q)||m.term.toLowerCase().includes(q)||m.def.toLowerCase().includes(q));
+  if(!matches.length){ list.innerHTML='<div style="font-size:11px;color:#888;padding:8px 0;">No matching terms found.</div>'; box.classList.add('show'); return; }
+  list.innerHTML=matches.map(([,m])=>{ const term=lang==='my'?m.termMy||m.term:m.term, def=lang==='my'?m.defMy||m.def:m.def; return `<div class="gloss-item" style="display:flex;flex-direction:column;"><div class="g-term" style="font-size:12px;font-weight:700;color:#000;">${term}</div><div class="g-def" style="font-size:10.5px;line-height:1.4;margin-top:2px;color:#555;">${def}</div></div>`; }).join('');
+  box.classList.add('show');
+}
+
+function openMapScreen(){ showScr('mapscreen'); navTab('mapscreen'); exitMapNav(); }
+function routeTo(dest){ showScr('mapscreen'); navTab('mapscreen'); selectMapDest(dest||'room210'); }
+function animateDot(el,x,y,dur=450){
+  if(!el)return;
+  const cx=parseFloat(el.getAttribute('cx')),cy=parseFloat(el.getAttribute('cy')),t0=performance.now();
+  function frame(t){ const p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3); el.setAttribute('cx',cx+(x-cx)*e); el.setAttribute('cy',cy+(y-cy)*e); if(p<1)requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+}
+
+function mapSearchFn(v){
+  const q=v.trim().toLowerCase(), res=document.getElementById('mapSearchRes'), clearBtn=document.getElementById('mapSearchClearBtn');
+  if(!q){ res.classList.remove('show'); if(clearBtn)clearBtn.style.display='none'; return; }
+  res.classList.add('show'); if(clearBtn)clearBtn.style.display='block';
+  let any=false;
+  res.querySelectorAll('.srch-item[data-keys]').forEach(el=>{ const match=el.dataset.keys.includes(q)||el.querySelector('.sri-nm').textContent.toLowerCase().includes(q); el.classList.toggle('hide',!match); if(match)any=true; });
+  const noMatch=res.querySelector('.no-match-item'); if(noMatch)noMatch.classList.toggle('hide',any);
+}
+function clearMapSearch(){ document.getElementById('mapSearchInput').value=''; mapSearchFn(''); document.querySelectorAll('.map-filters-row button').forEach(b=>b.classList.remove('sel')); }
+function focusMapSearch(){ const input=document.getElementById('mapSearchInput'), res=document.getElementById('mapSearchRes'), clearBtn=document.getElementById('mapSearchClearBtn'); if(input){ input.value=''; input.focus(); } if(res){ res.classList.add('show'); res.querySelectorAll('.srch-item').forEach(el=>{ if(el.classList.contains('no-match-item'))el.classList.add('hide'); else el.classList.remove('hide'); }); } if(clearBtn)clearBtn.style.display='none'; document.querySelectorAll('.map-filters-row button').forEach(b=>b.classList.remove('sel')); }
+function filterMapCategory(cat,btn){ const input=document.getElementById('mapSearchInput'); const targetVal=cat==='bk'?'room':(cat==='faculty'?'science wing':'library'); const wasActive=btn&&btn.classList.contains('sel'); document.querySelectorAll('.map-filters-row button').forEach(b=>b.classList.remove('sel')); if(wasActive){ clearMapSearch(); } else { if(btn)btn.classList.add('sel'); input.value=targetVal; mapSearchFn(targetVal); } }
+function mapSearchKeyDown(e){ if(e.key==='Enter'){ const resPanel=document.getElementById('mapSearchRes'); if(resPanel&&resPanel.classList.contains('show')){ const visibleItem=resPanel.querySelector('.srch-item:not(.hide):not(.no-match-item)'); if(visibleItem)visibleItem.click(); } } }
+
+function selectMapDest(destId){
+  clearMapSearch();
+  currentDest=destId;
+  const d=DESTINATIONS[currentDest];
+  if(!d)return;
+  if(destId==='mainLibrary'||d.outdoorEnd===null){
+    document.getElementById('mSheetDefault').style.display='block';
+    document.getElementById('mSheetPlanning').style.display='none';
+    document.getElementById('mSheetNavigating').style.display='none';
+    document.getElementById('mSheetDefault').innerHTML=`<div style="text-align:center;padding:12px 0;"><div style="width:48px;height:48px;background:#E8E8E8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><i class="ti ti-map-pin" style="font-size:22px;color:#000;"></i></div><div style="font-size:14px;font-weight:800;color:#000;margin-bottom:4px;">You are at ${d.destLabel}</div><div style="font-size:11px;color:#888;line-height:1.5;">This is your current location. Choose a different destination to navigate.</div><button class="pri-btn" onclick="focusMapSearch()" style="margin-top:12px;"><i class="ti ti-search"></i> Choose Destination</button></div>`;
+    return;
+  }
+  activePhase='out';
+  document.getElementById('mSheetDefault').style.display='none';
+  document.getElementById('mSheetPlanning').style.display='block';
+  document.getElementById('mSheetNavigating').style.display='none';
+  document.getElementById('plDestTitle').textContent=d.title;
+  const isAccShort=d.roomCode==='entry'||d.roomCode==='admin';
+  const isFsktm=d.isFsktm===true;
+  const duration=navMode==='acc'?(isAccShort?'2 min':'6 min'):(isFsktm?'9 min':'11 min');
+  const dist=navMode==='acc'?(isAccShort?'80 m':'180 m'):(isFsktm?'700 m':'850 m');
+  document.getElementById('plTimeDist').textContent=`${duration} (${dist}) · 🚶 Walking`;
+  if(isFsktm){
+    OD_STEPS=OD_STEPS_FSKTM;
+    document.getElementById('gMapsDkapCircle').style.display='none';
+    document.getElementById('gMapsDkapText').style.display='none';
+    document.getElementById('gMapsFsktmCircle').style.display='block';
+    document.getElementById('gMapsFsktmText').style.display='block';
+  }else{
+    OD_STEPS=OD_STEPS_DKAP;
+    document.getElementById('gMapsDkapCircle').style.display='block';
+    document.getElementById('gMapsDkapText').style.display='block';
+    document.getElementById('gMapsFsktmCircle').style.display='none';
+    document.getElementById('gMapsFsktmText').style.display='none';
+  }
+  document.getElementById('gMapsOutdoorSvg').style.display='block';
+  document.getElementById('gMapsIndoorSvg').style.display='none';
+  const fsktmSvg=document.getElementById('gMapsIndoorSvgFsktm'); if(fsktmSvg)fsktmSvg.style.display='none';
+  drawGMapsOutdoorRouteLine();
+}
+
+function setPlMode(m){ navMode=m; document.getElementById('plBtnWalk').classList.toggle('sel',m==='walk'); document.getElementById('plBtnAcc').classList.toggle('sel',m==='acc'); const d=DESTINATIONS[currentDest]; const isAccShort=d?.roomCode==='entry'||d?.roomCode==='admin'; const isFsktm=d?.isFsktm===true; const duration=m==='acc'?(isAccShort?'2 min':'6 min'):(isFsktm?'9 min':'11 min'); const dist=m==='acc'?(isAccShort?'80 m':'180 m'):(isFsktm?'700 m':'850 m'); document.getElementById('plTimeDist').textContent=`${duration} (${dist}) · 🚶 Walking`; }
+
+function exitMapNav(){ if(autoSwitchTimer){clearTimeout(autoSwitchTimer);autoSwitchTimer=null;} odStep=0;inStep=0;activePhase='out'; document.getElementById('mSheetDefault').style.display='block'; document.getElementById('mSheetPlanning').style.display='none'; document.getElementById('mSheetNavigating').style.display='none'; document.getElementById('mapDirectionBanner').style.display='none'; document.getElementById('gMapsOutdoorSvg').style.display='block'; document.getElementById('gMapsIndoorSvg').style.display='none'; const fsktmSvg=document.getElementById('gMapsIndoorSvgFsktm'); if(fsktmSvg)fsktmSvg.style.display='none'; const dot=document.getElementById('gMapsDotPos'); if(dot){dot.setAttribute('cx',70);dot.setAttribute('cy',104);} const statusbar=document.querySelector('.phone-status-bar'); if(statusbar)statusbar.classList.remove('dark-text'); }
+function startMapNav(){ odStep=0;inStep=0;activePhase='out'; document.getElementById('mSheetPlanning').style.display='none'; document.getElementById('mSheetNavigating').style.display='block'; document.getElementById('mapDirectionBanner').style.display='flex'; document.getElementById('gMapsOutdoorSvg').style.display='block'; document.getElementById('gMapsIndoorSvg').style.display='none'; const fsktmSvg=document.getElementById('gMapsIndoorSvgFsktm'); if(fsktmSvg)fsktmSvg.style.display='none'; document.querySelector('.phone-status-bar').classList.add('dark-text'); updateGMapsNavUI(); }
+function drawGMapsOutdoorRouteLine(){ const poly=document.getElementById('gMapsRouteLine'); if(poly&&OD_STEPS.length>0){ const pts=OD_STEPS.map(s=>`${s.dot[0]},${s.dot[1]}`).join(' '); poly.setAttribute('points',pts); } }
+
+function updateGMapsNavUI(){
+  if(activePhase==='out'){
+    const s=OD_STEPS[odStep], total=OD_STEPS.length;
+    document.getElementById('navStepTitle').textContent=`OUTDOOR PHASE · Step ${odStep+1} of ${total}`;
+    document.getElementById('navModeToggles').style.display='none';
+    document.getElementById('navSwitchIndoorBtn').style.display='none';
+    document.getElementById('navArriveBanner').style.display='none';
+    const prog=document.getElementById('navProgBar'); prog.innerHTML='';
+    for(let i=0;i<total;i++){ const p=document.createElement('div'); p.className='odp'+(i<=odStep?' dn':''); prog.appendChild(p); }
+    document.getElementById('navInstr').textContent=s.instr;
+    document.getElementById('navDist').textContent=s.dist;
+    document.getElementById('navIcoBox').className='od-dir-ico '+s.kind;
+    document.getElementById('navIco').className='ti '+s.icon;
+    document.getElementById('navBackBtn').disabled=odStep===0;
+    const isLast=odStep===total-1;
+    const d=DESTINATIONS[currentDest];
+    document.getElementById('navNextBtn').innerHTML=isLast?'<i class="ti ti-refresh"></i> Restart':'Next <i class="ti ti-chevron-right"></i>';
+    document.getElementById('bannerDirText').textContent=isLast?`Arrived at ${d.outdoorEnd}!`:s.instr;
+    document.getElementById('bannerSubText').textContent=isLast?'Switch to indoor navigation':s.dist;
+    if(isLast){ document.getElementById('navArriveBanner').style.display='flex'; document.getElementById('navArriveTitle').textContent=`Arrived at ${d.outdoorEnd||d.room}!`; const showIndoor=d.indoor&&d.roomCode; document.getElementById('navSwitchIndoorBtn').style.display=showIndoor?'block':'none'; if(showIndoor&&autoSwitchTimer===null)autoSwitchTimer=setTimeout(()=>mapSwitchToIndoor(),2500); }
+    const backOutBtn=document.getElementById('navBackToOutdoorBtn'); if(backOutBtn)backOutBtn.style.display='none';
+    const dot=document.getElementById('gMapsDotPos'); if(dot&&s.dot)animateDot(dot,s.dot[0],s.dot[1]);
+  }else{
+    const step=IN_STEPS[inStep], total=IN_STEPS.length;
+    document.getElementById('navStepTitle').textContent=`INDOOR PHASE · Step ${inStep+1} of ${total}`;
+    document.getElementById('navModeToggles').style.display='flex';
+    document.getElementById('navSwitchIndoorBtn').style.display='none';
+    document.getElementById('navArriveBanner').style.display='none';
+    document.getElementById('navLiftBtn').style.display='block';
+    document.getElementById('navStairsBtn').style.display='block';
+    const prog=document.getElementById('navProgBar'); prog.innerHTML='';
+    for(let i=0;i<total;i++){ const p=document.createElement('div'); p.className='odp'+(i<=inStep?' dn':''); prog.appendChild(p); }
+    document.getElementById('navInstr').textContent=step.instr;
+    document.getElementById('navDist').textContent=step.det;
+    document.getElementById('navIcoBox').className='od-dir-ico '+(step.kind==='arrive'?'arrive':'walk');
+    document.getElementById('navIco').className='ti '+step.icon;
+    document.getElementById('navBackBtn').disabled=inStep===0;
+    const isLast=inStep===total-1;
+    document.getElementById('navNextBtn').innerHTML=isLast?'<i class="ti ti-refresh"></i> Restart':'Next <i class="ti ti-chevron-right"></i>';
+    const d=DESTINATIONS[currentDest];
+    document.getElementById('bannerDirText').textContent=isLast?`Arrived at ${d.room}!`:step.instr;
+    document.getElementById('bannerSubText').textContent=isLast?'Destination reached successfully':step.det;
+    if(isLast){ document.getElementById('navArriveBanner').style.display='flex'; document.getElementById('navArriveTitle').textContent=`Arrived at ${d.room}!`; document.getElementById('navArriveSub').textContent=`Classroom floor: ${step.floor}`; }
+    const backOutBtn=document.getElementById('navBackToOutdoorBtn'); if(backOutBtn)backOutBtn.style.display='flex';
+    highlightIndoorRooms();
+    drawGMapsIndoorRouteLine();
+    const isFsktmActive=DESTINATIONS[currentDest]?.isFsktm===true;
+    const dotId=isFsktmActive?'gMapsFsktmDot':'gMapsIndoorDot';
+    const dot=document.getElementById(dotId); if(dot&&step.dot)animateDot(dot,step.dot[0],step.dot[1]);
+  }
+}
+
+function mapNavNext(){
+  if(activePhase==='out'){
+    if(odStep===OD_STEPS.length-1){ if(autoSwitchTimer)clearTimeout(autoSwitchTimer); odStep=0; updateGMapsNavUI(); return; }
+    odStep++; updateGMapsNavUI();
+  }else{
+    if(inStep===IN_STEPS.length-1){ inStep=0; updateGMapsNavUI(); return; }
+    inStep++; updateGMapsNavUI();
+  }
+}
+function mapNavBack(){
+  if(activePhase==='out'){ if(odStep>0){ if(autoSwitchTimer)clearTimeout(autoSwitchTimer); odStep--; updateGMapsNavUI(); } }
+  else{ if(inStep>0){ inStep--; updateGMapsNavUI(); } }
+}
+
+function mapSwitchToIndoor(){
+  if(autoSwitchTimer){clearTimeout(autoSwitchTimer);autoSwitchTimer=null;}
+  activePhase='in'; inStep=0; navMode='lift';
+  document.getElementById('navLiftBtn').classList.add('sel'); document.getElementById('navStairsBtn').classList.remove('sel');
+  const d=DESTINATIONS[currentDest]; const isFsktmActive=d?.isFsktm===true; const destRoomId=d?.roomCode||'room210';
+  document.getElementById('gMapsOutdoorSvg').style.display='none';
+  const fsktmSvg=document.getElementById('gMapsIndoorSvgFsktm');
+  if(isFsktmActive){ document.getElementById('gMapsIndoorSvg').style.display='none'; if(fsktmSvg)fsktmSvg.style.display='block'; IN_STEPS=generateFSKTMIndoorRoute(destRoomId,navMode); }
+  else{ document.getElementById('gMapsIndoorSvg').style.display='block'; if(fsktmSvg)fsktmSvg.style.display='none'; IN_STEPS=generateIndoorRoute(destRoomId,navMode); }
+  document.querySelector('.phone-status-bar').classList.add('dark-text');
+  buildIndoorGrids(); updateIndoorSvgPin(); updateGMapsNavUI();
+}
+function mapSwitchToOutdoor(){
+  if(autoSwitchTimer){clearTimeout(autoSwitchTimer);autoSwitchTimer=null;}
+  activePhase='out'; odStep=OD_STEPS.length-1;
+  document.getElementById('gMapsOutdoorSvg').style.display='block'; document.getElementById('gMapsIndoorSvg').style.display='none';
+  const fsktmSvg=document.getElementById('gMapsIndoorSvgFsktm'); if(fsktmSvg)fsktmSvg.style.display='none';
+  document.querySelector('.phone-status-bar').classList.add('dark-text'); updateGMapsNavUI();
+}
+function setNavMode(m){
+  navMode=m; document.getElementById('navLiftBtn').classList.toggle('sel',m==='lift'); document.getElementById('navStairsBtn').classList.toggle('sel',m==='stairs');
+  const d=DESTINATIONS[currentDest]; const destRoomId=d?.roomCode||'room210';
+  IN_STEPS=d.isFsktm?generateFSKTMIndoorRoute(destRoomId,m):generateIndoorRoute(destRoomId,m);
+  if(inStep>=IN_STEPS.length)inStep=IN_STEPS.length-1; updateGMapsNavUI();
+}
+function drawGMapsIndoorRouteLine(){
+  const polyId=DESTINATIONS[currentDest]?.isFsktm?'gMapsFsktmRoute':'gMapsIndoorRoute';
+  const poly=document.getElementById(polyId); if(poly&&IN_STEPS.length>0){ const pts=IN_STEPS.map(s=>s.dot?`${s.dot[0]},${s.dot[1]}`:'').filter(p=>p!=='').join(' '); poly.setAttribute('points',pts); }
+}
+function updateIndoorSvgPin(){
+  const destId=DESTINATIONS[currentDest]?.roomCode||'room210';
+  const destName=DESTINATIONS[currentDest]?.room||'Room 210';
+  if(DESTINATIONS[currentDest]?.isFsktm){
+    const rooms=['fsktm_lab1','fsktm_lab2','fsktm_lab3','fsktm_sem'];
+    rooms.forEach(r=>{ const box=document.getElementById(`fsktm_mBox_${r.replace('fsktm_','')}`); if(box){ box.setAttribute('fill',r===destId?'#E8E8E8':'#E0E0E0'); box.setAttribute('stroke',r===destId?'#000':'#aaa'); box.setAttribute('stroke-width',r===destId?'2':'1'); } });
+    const pin=document.getElementById('gMapsFsktmDestPin'); if(pin){ pin.style.display='block'; pin.setAttribute('cx',208); pin.setAttribute('cy',24); }
+  }else{
+    const allRooms=['room208','room209','room210','room211','room212','room213','room214','room215'];
+    allRooms.forEach(r=>{ const box=document.getElementById(`mBox_${r}`); if(box){ box.setAttribute('fill',r===destId?'#E8E8E8':'#fff'); box.setAttribute('stroke',r===destId?'#000':'#aaa'); box.setAttribute('stroke-width',r===destId?'2':'1'); } });
+    const pin=document.getElementById('gMapsIndoorDestPin'); if(pin){ pin.style.display='block'; const x=destId==='room210'?208:208; const y=destId==='room210'?62:24; pin.setAttribute('cx',x); pin.setAttribute('cy',y); }
+  }
+}
+
+function makeRoom(r,suffix){ const el=document.createElement('div'); el.id=`rm_${r.id}_${suffix}`; el.className=`rm ${r.cls||''}`; el.innerHTML=`<span class="rm-nm">${r.name}</span>${r.sub?`<span class="rm-sub">${r.sub}</span>`:''}`; return el; }
+function buildIndoorGrids(){ ['gL2a','gGa','gGs','gL2s'].forEach(id=>{ const g=document.getElementById(id); if(g)g.innerHTML=''; }); }
+function getRid(el){ return el.id.replace(/^rm_/,'').replace(/_[a-z]+$/,''); }
+function highlightIndoorRooms(){ document.querySelectorAll('.rm').forEach(el=>el.classList.remove('active-s','hl')); const step=IN_STEPS[inStep]; if(!step)return; document.querySelectorAll('.rm').forEach(el=>{ if(getRid(el)===step.id)el.classList.add('active-s'); }); }
+
+let translateTargetLang='en', lensInterval=null, lensSignKeys=Object.keys(SIGNS), lensCurrentIdx=0, lensPhase='scanning';
+function changeTranslateLang(l){ translateTargetLang=l; if(lensPhase==='showing'){ const idx=(lensCurrentIdx-1+lensSignKeys.length)%lensSignKeys.length; renderLensFrame(lensSignKeys[idx]); } }
+function renderLensFrame(key){
+  const s=SIGNS[key]; if(!s)return;
+  const layer=document.getElementById('lensArLayer'), pill=document.getElementById('lensDetectedPill'), wordEl=document.getElementById('lensDetectedWord'), statusEl=document.getElementById('lensStatusText');
+  if(!layer)return;
+  const translated=s.translations[translateTargetLang]||s.translations['en'];
+  const positions={ bilik:[{top:'38%',left:'15%',w:130,ot:'ROOM',tr:translated.split(' ')[0]},{top:'52%',left:'15%',w:130,ot:'210',tr:translated.split(' ')[1]||''}], tingkat:[{top:'44%',left:'20%',w:110,ot:'LEVEL',tr:translated.split(' ')[0]},{top:'57%',left:'20%',w:60,ot:'2',tr:translated.split(' ')[1]||'2'}], blok:[{top:'40%',left:'12%',w:80,ot:'BLOCK A',tr:translated.split('—')[0].trim()},{top:'54%',left:'12%',w:90,ot:'HALL A',tr:(translated.split('—')[1]||'HALL A').trim()}], sayap:[{top:'43%',left:'18%',w:115,ot:'EAST',tr:translated.split(' ')[0]},{top:'57%',left:'18%',w:90,ot:'WING',tr:translated.split(' ')[1]||''}] };
+  const boxes=positions[key]||[{top:'44%',left:'15%',w:120,ot:s.my,tr:translated}];
+  layer.innerHTML=boxes.map(b=>b.tr?`<div class="lens-word-box" style="top:${b.top};left:${b.left};width:${b.w}px;height:22px;"></div><div class="lens-ar-bubble" style="top:calc(${b.top} + 26px);left:${b.left};"><div class="lens-ar-original">${b.ot}</div><div class="lens-ar-translated">${b.tr}</div></div>`:'').join('');
+  if(pill)pill.style.display='flex'; if(wordEl)wordEl.textContent=s.my; if(statusEl)statusEl.innerHTML=`Translated to <b>${getLangName(translateTargetLang)}</b>`;
+}
+function getLangName(code){ return {en:'English',my:'Malay',zh:'Chinese',ja:'Japanese',ta:'Tamil'}[code]||code; }
+function startLensLoop(){
+  stopLensLoop();
+  const layer=document.getElementById('lensArLayer'), sweep=document.getElementById('lensSweep'), pill=document.getElementById('lensDetectedPill'), statusEl=document.getElementById('lensStatusText');
+  function doScan(){ lensPhase='scanning'; if(layer)layer.innerHTML=''; if(pill)pill.style.display='none'; if(sweep)sweep.style.display='block'; if(statusEl)statusEl.innerHTML='Scanning for signboards…'; setTimeout(()=>{ if(sweep)sweep.style.display='none'; lensPhase='showing'; renderLensFrame(lensSignKeys[lensCurrentIdx]); lensCurrentIdx=(lensCurrentIdx+1)%lensSignKeys.length; },1400); }
+  doScan(); lensInterval=setInterval(doScan,4000);
+}
+function stopLensLoop(){ if(lensInterval){clearInterval(lensInterval);lensInterval=null;} const layer=document.getElementById('lensArLayer'), sweep=document.getElementById('lensSweep'); if(layer)layer.innerHTML=''; if(sweep)sweep.style.display='none'; }
+
+navMode='walk'; setLang('en'); exitMapNav();
+</script>
+</body>
+</html>
