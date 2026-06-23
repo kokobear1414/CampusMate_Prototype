@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CampusMate - UPM Navigation</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Tabler Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Outfit',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.pw{display:flex;justify-content:center;padding:20px 0;background:transparent}
+.phone{width:360px;height:780px;background:#F2F2F2;border-radius:44px;border:8px solid #222;box-shadow:0 24px 48px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+/* Phone Status Bar Mockup */
+.phone-status-bar{position:absolute;top:0;left:0;right:0;height:28px;padding:0 24px;display:flex;justify-content:space-between;align-items:center;z-index:100;font-size:11px;font-weight:600;color:#fff;pointer-events:none;transition:color .3s}
+.phone-status-bar.dark-text{color:#1A1A1A}
+.status-icons{display:flex;align-items:center;gap:4px}
+.status-icons i{font-size:12px}
+
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;transition:transform .3s ease,opacity .3s;will-change:transform,opacity}
+.scr.hid{transform:translateX(100%);opacity:0;pointer-events:none}
+.back-btn{width:32px;height:32px;border-radius:50%;background:#F2F2F2;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.back-btn i{font-size:16px;color:#1A1A1A}
+.pri-btn{width:100%;background:#333;color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
+.bnav{position:absolute;bottom:0;left:0;right:0;height:66px;background:#fff;border-top:1px solid #EAEAEA;display:flex;align-items:center;justify-content:space-around;padding:0 6px 6px;z-index:50}
+.ni{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 10px;cursor:pointer;flex:1}
+.ni i{font-size:21px;color:#999}
+.ni span{font-size:10px;color:#999;font-weight:500}
+.ni.act i,.ni.act span{color:#333}
+
+/* HOME */
+#home{background:#F2F2F2}
+.h-hdr{background:#333;padding:42px 18px 22px;border-bottom-left-radius:22px;border-bottom-right-radius:22px;flex-shrink:0;box-shadow:0 4px 12px rgba(51,51,51,0.15)}
+.h-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.h-appname{font-size:18px;font-weight:700;color:#fff;letter-spacing:0.5px}
+.h-settbtn{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:18px;padding:5px 11px;color:#fff;font-size:12px;cursor:pointer}
+.h-greet{font-size:22px;font-weight:700;color:#fff;margin-bottom:2px}
+.h-sub{font-size:12px;color:rgba(255,255,255,.8)}
+.h-body{flex:1;overflow-y:auto;padding:16px 14px 76px;scrollbar-width:none}
+.h-body::-webkit-scrollbar{display:none}
+.sec-t{font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:9px}
+.up-next{background:#fff;border-radius:14px;padding:14px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);border-left:4px solid #333}
+.un-time{font-size:11px;font-weight:700;color:#333;margin-bottom:2px}
+.un-name{font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:6px}
+.un-loc{display:flex;align-items:center;gap:4px;font-size:11px;color:#666;margin-bottom:11px}
+.un-loc i{font-size:13px;color:#666}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.tool-card{background:#fff;border-radius:13px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform 0.2s}
+.tool-card:active{transform:scale(0.96)}
+.tool-ico{font-size:24px;color:#333;height:32px;display:flex;align-items:center;justify-content:center}
+.tool-nm{font-size:12px;font-weight:700;color:#1A1A1A}
+.tool-sm{font-size:10px;color:#888}
+.srch-card{background:#fff;border-radius:13px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:16px}
+.srch-row{display:flex;align-items:center;gap:7px;padding:11px 13px;border-bottom:1px solid #F0F0F0}
+.srch-row i{font-size:15px;color:#888}
+.srch-row input{border:none;outline:none;flex:1;font-size:13px;background:transparent;color:#1A1A1A}
+.srch-row input::placeholder{color:#999}
+.srch-res{display:none;max-height:220px;overflow-y:auto}
+.srch-res.show{display:block}
+.srch-item{display:flex;align-items:center;gap:10px;padding:10px 13px;cursor:pointer;border-bottom:1px solid #F8F8F8}
+.srch-item:last-child{border-bottom:none}
+.srch-item:hover{background:#F8F8F8}
+.sri-ico{width:32px;height:32px;border-radius:8px;background:#E8E8E8;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sri-ico i{font-size:16px;color:#3A3A3A}
+.sri-nm{font-size:13px;font-weight:700;color:#1A1A1A}
+.sri-loc{font-size:11px;color:#888}
+.gloss-card{background:#fff;border-radius:13px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.gloss-res{padding:11px 13px;display:block}
+.gloss-res.show{display:block}
+.g-term{font-size:13px;font-weight:700;color:#333;margin-bottom:2px}
+.g-def{font-size:11px;color:#555;line-height:1.5}
+
+/* MAP & NAVIGATION STYLES */
+.map-canvas{width:100%;height:180px;position:relative;overflow:hidden}
+.map-canvas svg{width:100%;height:100%}
+.map-phase-bar{display:flex;background:#F2F2F2;border-bottom:1px solid #EAEAEA}
+.mpb{flex:1;padding:8px 4px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:#888;border:none;background:transparent}
+.mpb.act{color:#333;border-bottom:2px solid #333;background:#fff}
+.map-svg-card{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);overflow:hidden;margin-bottom:12px}
+
+/* directions step card styling */
+.od-step-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.od-step-ttl{font-size:12px;font-weight:700;color:#1A1A1A}
+.od-step-ct{font-size:11px;color:#888}
+.od-prog{display:flex;gap:3px;margin-bottom:10px}
+.odp{flex:1;height:3px;border-radius:3px;background:#E0E0E0}
+.odp.dn{background:#333}
+.odp.cu{background:#333}
+.od-step-body{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.od-dir-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.od-dir-ico.walk{background:#E8E8E8}
+.od-dir-ico.turn{background:#EAEAEA}
+.od-dir-ico.arrive{background:#EAEAEA}
+.od-dir-ico i{font-size:18px}
+.od-dir-ico.walk i{color:#3A3A3A}
+.od-dir-ico.turn i{color:#4A4A4A}
+.od-dir-ico.arrive i{color:#4A4A4A}
+.od-instr{font-size:13px;font-weight:600;color:#1A1A1A;line-height:1.4}
+.od-dist{font-size:11px;color:#888;margin-top:3px}
+.od-arrived-banner{background:#EAEAEA;border:.5px solid #CCC;border-radius:10px;padding:12px;display:none;align-items:center;gap:10px;margin-top:8px}
+.od-arrived-banner.show{display:flex}
+.arr-big{font-size:13px;font-weight:700;color:#333}
+.arr-sm{font-size:11px;color:#4A4A4A;margin-top:2px}
+.switch-indoor-btn{width:100%;background:#4A4A4A;color:#fff;border:none;border-radius:28px;padding:12px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;margin-top:10px}
+.switch-indoor-btn i{font-size:15px}
+
+/* indoor nav elements */
+.meta-row{display:flex;gap:5px;flex-wrap:wrap}
+.mc{display:flex;align-items:center;gap:4px;font-size:11px;color:#5f5e5a;background:#F5F5F5;border:.5px solid #CCC;border-radius:18px;padding:3px 8px}
+.mc i{font-size:12px}
+.mc.hl{background:#E8E8E8;border-color:#CCC;color:#2A2A2A}
+.opts-row{display:flex;gap:5px}
+.obt{display:flex;align-items:center;gap:4px;font-size:11px;border:.5px solid #CCC;background:#F5F5F5;border-radius:18px;padding:4px 9px;cursor:pointer;color:#5f5e5a}
+.obt.sel{background:#E8E8E8;border-color:#CCC;color:#2A2A2A;font-weight:700}
+.obt i{font-size:12px}
+.ftabs{display:flex;background:#ECECEC;border:.5px solid #CCC;border-radius:8px;overflow:hidden}
+.ftab{flex:1;padding:7px 3px;font-size:10px;font-weight:500;border:none;background:transparent;cursor:pointer;color:#5f5e5a;display:flex;align-items:center;justify-content:center;gap:3px;position:relative}
+.ftab.act{background:#F5F5F5;color:#2c2c2a}
+.ftab.act::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:#3A3A3A}
+.fvbadge{font-size:9px;background:#E8E8E8;color:#2A2A2A;border-radius:3px;padding:1px 4px;font-weight:600}
+.ftab.act .fvbadge{background:#3A3A3A;color:#fff}
+.map-card{background:#F5F5F5;border:.5px solid #CCC;border-radius:10px;overflow:hidden;padding:10px}
+.fgrid{display:grid;gap:6px;width:100%;grid-template-columns:repeat(4,1fr)}
+.rm{position:relative;border-radius:5px;border:1.5px solid #AAA;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;min-height:54px;cursor:pointer;background:#F5F5F5}
+.rm.retail{background:#F5F5F5}
+.rm.study{background:#EAEAEA;border-color:#CCC}
+.rm.admin{background:#F0F0F0}
+.rm.dest{background:#EAEAEA;border-color:#4A4A4A;border-width:2px}
+.rm.start{background:#E8E8E8;border-color:#3A3A3A;border-width:2px}
+.rm.active-s{box-shadow:0 0 0 3px rgba(58,58,58,.5);transform:scale(1.05);z-index:3}
+.rm.hl{box-shadow:0 0 0 2px rgba(58,58,58,.25)}
+.rm-nm{font-size:9px;font-weight:700;color:#2c2c2a;text-align:center}
+.rm-sub{font-size:7px;color:#5f5e5a;text-align:center;margin-top:1px}
+.rb{position:absolute;top:2px;right:2px;width:13px;height:13px;border-radius:50%;font-size:7px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff}
+.rb.s{background:#3A3A3A}.rb.d{background:#4A4A4A}
+.fsep{display:flex;align-items:center;gap:5px;margin:5px 0}
+.fsep-line{flex:1;height:1px;background:#CCC}
+.fsep-lbl{font-size:8px;color:#888;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:3px}
+.fsep-lbl i{font-size:10px}
+.lift-hint{background:#ECECEC;border:.5px solid #BBB;border-radius:6px;padding:7px 10px;font-size:10px;color:#444;display:none;margin-top:5px;line-height:1.5}
+.lift-hint.show{display:block}
+.sp{flex:1;height:2.5px;border-radius:3px;background:#CCC}
+.sp.dn{background:#3A3A3A}
+.sp.cu{background:#3A3A3A}
+.s-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-ico.move{background:#E8E8E8}.s-ico.lift{background:#ECECEC}.s-ico.arrive{background:#EAEAEA}
+.s-ico i{font-size:14px}
+.s-ico.move i{color:#3A3A3A}.s-ico.lift i{color:#555}.s-ico.arrive i{color:#4A4A4A}
+.s-instr{font-size:12px;font-weight:500;color:#2c2c2a;line-height:1.4}
+.s-det{font-size:10px;color:#5f5e5a;margin-top:2px}
+
+/* Phase progress pill */
+.phase-pill{display:flex;align-items:center;gap:0;background:#fff;border-radius:20px;border:.5px solid #CCC;overflow:hidden;margin-bottom:12px;font-size:11px}
+.ph{flex:1;padding:7px 6px;text-align:center;font-weight:600;color:#999;display:flex;align-items:center;justify-content:center;gap:4px}
+.ph.done{color:#4A4A4A;background:#EAEAEA}
+.ph.active{color:#fff;background:#333}
+.ph i{font-size:12px}
+.ph-sep{width:1px;background:#CCC;height:30px;flex-shrink:0}
+
+/* Animations */
+.od-instr,.s-instr,.g-term{animation:fadeSlide .35s ease}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scanLine{0%{top:10%}50%{top:85%}100%{top:10%}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.rm.active-s{animation:pulse .6s ease}
+#routeLine,#indoorRoute,#gMapsRouteLine,#gMapsIndoorRoute,#gMapsFsktmRoute{transition:stroke-dashoffset .5s}
+
+/* GPS and text styling */
+.gps-banner{background:#EAEAEA;border-radius:10px;padding:10px 12px;font-size:11px;color:#3A3A3A;margin-bottom:14px;display:flex;align-items:center;gap:8px;line-height:1.4}
+.lang-pill{display:flex;background:rgba(255,255,255,.2);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.3)}
+.lang-pill button{border:none;background:transparent;color:rgba(255,255,255,.7);font-size:10px;font-weight:700;padding:4px 9px;cursor:pointer}
+.lang-pill button.act{background:rgba(255,255,255,.25);color:#fff}
+.srch-item.hide{display:none}
+.gloss-list{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.gloss-item{background:#F5F5F5;border-radius:8px;padding:9px 12px;border-left:3px solid #333;margin-bottom:6px}
+
+/* Schedule */
+#schedule{background:#F2F2F2}
+.sch-hdr{background:#333;padding:42px 18px 18px;flex-shrink:0}
+.sch-body{flex:1;overflow-y:auto;padding:14px 14px 76px}
+.sch-card{background:#fff;border-radius:13px;padding:13px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:4px solid #333}
+.sch-time{font-size:11px;font-weight:700;color:#333;margin-bottom:3px}
+.sch-course{font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:4px}
+.sch-loc{font-size:11px;color:#666;margin-bottom:10px;display:flex;align-items:center;gap:4px}
+.sch-nav-btn{width:100%;background:#E8E8E8;color:#3A3A3A;border:none;border-radius:10px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+
+/* Translate — Google Lens style */
+#translate{background:#000;display:flex;flex-direction:column}
+.tr-hdr{padding:42px 14px 10px;display:flex;align-items:center;gap:10px;flex-shrink:0;background:linear-gradient(to bottom,rgba(0,0,0,.85),rgba(0,0,0,0));position:absolute;top:0;left:0;right:0;z-index:20;pointer-events:none}
+.tr-hdr>*{pointer-events:auto}
+.tr-hdr h2{color:#fff;font-size:15px;font-weight:700;flex:1}
+.lens-viewport{flex:1;position:relative;overflow:hidden;background:#111}
+#webcamVideo{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;display:none}
+.lens-no-cam{position:absolute;inset:0;z-index:2;background:linear-gradient(135deg,#1A1A1A 0%,#222 50%,#2A2A2A 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.lens-no-cam i{font-size:40px;color:rgba(255,255,255,.25)}
+.lens-no-cam span{font-size:11px;color:rgba(255,255,255,.4);text-align:center;padding:0 30px;line-height:1.5}
+/* Corner frame brackets */
+.lens-bracket{position:absolute;z-index:5;pointer-events:none}
+.lens-bracket.tl{top:60px;left:20px;border-top:3px solid #fff;border-left:3px solid #fff;width:28px;height:28px;border-radius:2px 0 0 0}
+.lens-bracket.tr{top:60px;right:20px;border-top:3px solid #fff;border-right:3px solid #fff;width:28px;height:28px;border-radius:0 2px 0 0}
+.lens-bracket.bl{bottom:72px;left:20px;border-bottom:3px solid #fff;border-left:3px solid #fff;width:28px;height:28px;border-radius:0 0 0 2px}
+.lens-bracket.br{bottom:72px;right:20px;border-bottom:3px solid #fff;border-right:3px solid #fff;width:28px;height:28px;border-radius:0 0 2px 0}
+/* Scan sweep line */
+.lens-sweep{position:absolute;left:20px;right:20px;height:2px;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.2) 20%,#999 50%,rgba(255,255,255,.2) 80%,transparent 100%);z-index:6;animation:lensSweep 2s ease-in-out infinite;display:none}
+@keyframes lensSweep{0%{top:60px;opacity:1}85%{opacity:1}100%{top:calc(100% - 72px);opacity:0}}
+/* Detected word highlight boxes */
+.lens-word-box{position:absolute;z-index:7;border:1.5px solid rgba(150,150,150,.7);border-radius:3px;background:rgba(150,150,150,.08);pointer-events:none;animation:wordAppear .3s ease}
+@keyframes wordAppear{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+/* AR translation bubble */
+.lens-ar-bubble{position:absolute;z-index:8;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);border:1.5px solid rgba(150,150,150,.6);border-radius:10px;padding:7px 11px;min-width:90px;pointer-events:none;animation:wordAppear .35s ease;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.lens-ar-original{font-size:8px;color:rgba(255,255,255,.5);font-weight:600;letter-spacing:.4px;margin-bottom:2px;text-transform:uppercase}
+.lens-ar-translated{font-size:12px;color:#999;font-weight:700;line-height:1.3}
+/* Bottom control bar */
+.lens-bottom-bar{position:absolute;bottom:66px;left:0;right:0;z-index:15;background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,0));padding:20px 16px 10px;display:flex;align-items:center;justify-content:center;gap:10px}
+.lens-status{font-size:10px;color:rgba(255,255,255,.6);text-align:center;letter-spacing:.3px}
+.lens-status b{color:#999;font-weight:700}
+/* Detected text pill at top of bottom bar */
+.lens-detected-pill{position:absolute;bottom:130px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);backdrop-filter:blur(4px);border-radius:20px;padding:5px 14px;display:flex;align-items:center;gap:6px;white-space:nowrap;z-index:16;animation:fadeSlide .4s ease}
+.lens-detected-pill span{font-size:10px;color:rgba(255,255,255,.7)}
+.lens-detected-pill b{font-size:11px;color:#fff;font-weight:700;letter-spacing:.5px}
+
+/* GOOGLE MAP FEATURE SCREEN */
+#mapscreen{background:#F2F2F2}
+</style>
+</head>
+<body>
+
+<div class="pw">
+<div class="phone">
+
+    <!-- Phone Status Bar Mockup -->
+    <div class="phone-status-bar">
+        <span class="status-time">09:41</span>
+        <div class="status-icons">
+            <i class="ti ti-antenna-bars-4"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-4"></i>
+        </div>
+    </div>
+
+    <!-- HOME -->
+    <div class="scr" id="home">
+        <div class="h-hdr">
+            <div class="h-top">
+                <div class="h-appname">CampusMate</div>
+                    <!-- <div style="display:flex;gap:6px;align-items:center">
+                        <div class="lang-pill">
+                            <button class="act" id="langEn" onclick="setLang('en')">EN</button>
+                            <button id="langMy" onclick="setLang('my')">MY</button>
+                        </div>
+                        <div class="h-settbtn" onclick="toggleLang()"><i class="ti ti-language"></i></div>
+                    </div> -->
+            </div>
+            <div class="h-greet">Hi, Alex! 👋</div>
+            <div class="h-sub">Perpustakaan Sultan Abdul Samad · UPM</div>
+        </div>
+        <div class="h-body">
+            <div class="sec-t">Up Next</div>
+            <div class="up-next">
+                <div class="un-time">11:00 AM - 12:30 PM</div>
+                <div style="font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:5px">Linear Algebra (CSC 3000)</div>
+                <div class="un-loc"><i class="ti ti-map-pin"></i> DKAP · BK-10, Level 2</div>
+                <button class="pri-btn" onclick="routeTo('bk10')"><i class="ti ti-navigation"></i> Route Me to Class</button>
+            </div>
+            <div class="gps-banner"><i class="ti ti-gps-off" style="font-size:18px;flex-shrink:0"></i><span id="gpsBanner">GPS fails indoors - CampusMate guides you inside buildings too.</span></div>
+
+            <!-- Glossary placed in place of search -->
+            <div class="sec-t" id="hardFindLbl">Campus Glossary &amp; Search</div>
+            <div class="gloss-card" style="margin-bottom: 16px;">
+                <div class="srch-row"><i class="ti ti-search"></i><input type="text" id="gi" placeholder="Search: dkap, bk, fsktm..." oninput="searchGloss(this.value)"/></div>
+                <div class="gloss-res" id="gr"><div class="gloss-list" id="glossList"></div></div>
+            </div>
+
+            <div class="sec-t">Quick Tools</div>
+            <div class="tools-grid">
+                <div class="tool-card" onclick="openMapScreen()"><div class="tool-ico"><i class="ti ti-map-2"></i></div><div class="tool-nm">Navigate</div><div class="tool-sm">Outdoor + Indoor</div></div>
+                <div class="tool-card" onclick="showScr('translate')"><div class="tool-ico"><i class="ti ti-camera"></i></div><div class="tool-nm">Translate Sign</div><div class="tool-sm">Scan &amp; translate</div></div>
+            </div>
+        </div>
+        <div class="bnav" id="bnavHome">
+            <div class="ni act" data-tab="home" onclick="navTab('home')"><i class="ti ti-home"></i><span>Home</span></div>
+            <div class="ni" data-tab="schedule" onclick="navTab('schedule')"><i class="ti ti-calendar"></i><span>Schedule</span></div>
+            <div class="ni" data-tab="translate" onclick="navTab('translate')"><i class="ti ti-language"></i><span>Translate</span></div>
+            <div class="ni" data-tab="mapscreen" onclick="navTab('mapscreen')"><i class="ti ti-map"></i><span>Map</span></div>
+        </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div class="scr hid" id="schedule">
+        <div class="sch-hdr">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                <button class="back-btn" style="background:rgba(255,255,255,.15);width:32px;height:32px;" onclick="navTab('home')"><i class="ti ti-arrow-left" style="color:#fff"></i></button>
+                <div style="font-size:20px;font-weight:700;color:#fff;">My Schedule</div>
+            </div>
+            <div style="font-size:12px;color:rgba(255,255,255,.8)">Tap any class to navigate</div>
+        </div>
+        <div class="sch-body" id="schBody"></div>
+        <div class="bnav" id="bnavSch">
+            <div class="ni" data-tab="home" onclick="navTab('home')"><i class="ti ti-home"></i><span>Home</span></div>
+            <div class="ni act" data-tab="schedule" onclick="navTab('schedule')"><i class="ti ti-calendar"></i><span>Schedule</span></div>
+            <div class="ni" data-tab="translate" onclick="navTab('translate')"><i class="ti ti-language"></i><span>Translate</span></div>
+            <div class="ni" data-tab="mapscreen" onclick="navTab('mapscreen')"><i class="ti ti-map"></i><span>Map</span></div>
+        </div>
+    </div>
+
+    <!-- TRANSLATE SIGN — Google Lens Style -->
+    <div class="scr hid" id="translate">
+        <!-- Floating header overlay -->
+        <div class="tr-hdr">
+            <button class="back-btn" style="background:rgba(255,255,255,.15);width:32px;height:32px;" onclick="navTab('home')"><i class="ti ti-arrow-left" style="color:#fff"></i></button>
+            <h2>Lens Translate</h2>
+            <!-- Language selector -->
+            <div style="display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);border-radius:14px;padding:3px 9px;">
+                <i class="ti ti-language" style="font-size:11px;color:rgba(255,255,255,.7);"></i>
+                <select id="trTargetLang" onchange="changeTranslateLang(this.value)" style="background:transparent;border:none;color:#fff;font-size:10px;font-weight:700;outline:none;cursor:pointer;">
+                    <option value="en" style="color:#1A1A1A;">English</option>
+                    <option value="my" style="color:#1A1A1A;">Malay</option>
+                    <option value="zh" style="color:#1A1A1A;">Chinese</option>
+                    <option value="ja" style="color:#1A1A1A;">Japanese</option>
+                    <option value="ta" style="color:#1A1A1A;">Tamil</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Full-screen lens viewport -->
+        <div class="lens-viewport" id="lensViewport">
+            <video id="webcamVideo" autoplay playsinline></video>
+
+            <!-- Fallback background when camera unavailable -->
+            <div class="lens-no-cam" id="lensNoCam">
+                <i class="ti ti-scan"></i>
+                <span>Point your camera at a signboard to translate.</span>
+            </div>
+
+            <!-- Corner brackets -->
+            <div class="lens-bracket tl"></div>
+            <div class="lens-bracket tr"></div>
+            <div class="lens-bracket bl"></div>
+            <div class="lens-bracket br"></div>
+
+            <!-- Sweep scan line -->
+            <div class="lens-sweep" id="lensSweep"></div>
+
+            <!-- Detected word boxes + AR bubbles rendered by JS -->
+            <div id="lensArLayer" style="position:absolute;inset:0;z-index:7;pointer-events:none;"></div>
+
+            <!-- Detected text pill -->
+            <div class="lens-detected-pill" id="lensDetectedPill" style="display:none;">
+                <span>Detected:</span>
+                <b id="lensDetectedWord"></b>
+            </div>
+
+            <!-- Bottom status bar -->
+            <div class="lens-bottom-bar">
+                <div class="lens-status" id="lensStatusText">Scanning for signboards…</div>
+            </div>
+        </div>
+
+        <!-- Bottom Nav -->
+        <div class="bnav" id="bnavTr" style="background:rgba(0,0,0,.85);border-top:1px solid rgba(255,255,255,.08);">
+            <div class="ni" data-tab="home" onclick="navTab('home')"><i class="ti ti-home" style="color:#888;"></i><span style="color:#888;">Home</span></div>
+            <div class="ni" data-tab="schedule" onclick="navTab('schedule')"><i class="ti ti-calendar" style="color:#888;"></i><span style="color:#888;">Schedule</span></div>
+            <div class="ni act" data-tab="translate" onclick="navTab('translate')"><i class="ti ti-language" style="color:#999;"></i><span style="color:#999;">Translate</span></div>
+            <div class="ni" data-tab="mapscreen" onclick="navTab('mapscreen')"><i class="ti ti-map" style="color:#888;"></i><span style="color:#888;">Map</span></div>
+        </div>
+    </div>
+
+    <!-- MAP TAB SCREEN (Unified Google Maps UI) -->
+    <div class="scr hid" id="mapscreen">
+
+        <!-- Top search & filter bar -->
+        <div style="background:transparent; padding: 42px 14px 10px; flex-shrink: 0; z-index: 10; position: relative;">
+            <div style="display:flex;align-items:center;margin-bottom:6px">
+                <button class="back-btn" onclick="navTab('home')"><i class="ti ti-arrow-left"></i></button>
+            </div>
+            <div class="srch-card" style="box-shadow: 0 4px 12px rgba(0,0,0,0.12); border-radius: 24px; margin-bottom: 8px;">
+                <div class="srch-row" style="padding: 10px 16px;">
+                    <i class="ti ti-search" style="color: #333; font-size: 16px;"></i>
+                    <input type="text" id="mapSearchInput" placeholder="Search campus room or faculty..." oninput="mapSearchFn(this.value)" onkeydown="mapSearchKeyDown(event)" style="font-size: 13px;"/>
+                    <button onclick="clearMapSearch()" style="width:24px; height:24px; background:transparent; border:none; display:none; cursor:pointer;" id="mapSearchClearBtn"><i class="ti ti-x" style="font-size:14px;color:#888;"></i></button>
+                </div>
+                <!-- Search Results Panel -->
+                <div class="srch-res" id="mapSearchRes" style="max-height: 180px; border-top: 1px solid #f0f0f0;">
+                    <div class="srch-item" data-keys="dkap dewan kompleks akademik" onclick="selectMapDest('dkap')"><div class="sri-ico"><i class="ti ti-building"></i></div><div><div class="sri-nm">DKAP</div><div class="sri-loc">Dewan Kompleks Akademik Pusat</div></div></div>
+                    <div class="srch-item" data-keys="bk-08 bk08 bilik kuliah" onclick="selectMapDest('bk08')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">BK-08</div><div class="sri-loc">Bilik Kuliah 08 · Level 2</div></div></div>
+                    <div class="srch-item" data-keys="bk-09 bk09 bilik kuliah" onclick="selectMapDest('bk09')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">BK-09</div><div class="sri-loc">Bilik Kuliah 09 · Level 2</div></div></div>
+                    <div class="srch-item" data-keys="bk-10 bk10 bilik kuliah" onclick="selectMapDest('bk10')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">BK-10</div><div class="sri-loc">Bilik Kuliah 10 · Level 2</div></div></div>
+                    <div class="srch-item" data-keys="bk-11 bk11 bilik kuliah" onclick="selectMapDest('bk11')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">BK-11</div><div class="sri-loc">Bilik Kuliah 11 · Level 2</div></div></div>
+                    <div class="srch-item" data-keys="bk-12 bk12 bilik kuliah south" onclick="selectMapDest('bk12')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">BK-12</div><div class="sri-loc">Bilik Kuliah 12 · Level 3</div></div></div>
+                    <div class="srch-item" data-keys="bk-13 bk13 bilik kuliah south" onclick="selectMapDest('bk13')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">BK-13</div><div class="sri-loc">Bilik Kuliah 13 · Level 3</div></div></div>
+                    <div class="srch-item" data-keys="bk-14 bk14 bilik kuliah south" onclick="selectMapDest('bk14')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">BK-14</div><div class="sri-loc">Bilik Kuliah 14 · Level 3</div></div></div>
+                    <div class="srch-item" data-keys="bk-15 bk15 bilik kuliah south" onclick="selectMapDest('bk15')"><div class="sri-ico"><i class="ti ti-door"></i></div><div><div class="sri-nm">BK-15</div><div class="sri-loc">Bilik Kuliah 15 · Level 3</div></div></div>
+                    <div class="srch-item" data-keys="fsktm faculty computer science it lab" onclick="selectMapDest('fsktm')"><div class="sri-ico" style="background:#ECECEC"><i class="ti ti-building" style="color:#444"></i></div><div><div class="sri-nm">FSKTM</div><div class="sri-loc">Faculty of Computer Science</div></div></div>
+                    <div class="srch-item" data-keys="fsktm lab3 lab 3 computer lab bilik makmal" onclick="selectMapDest('fsktm_lab3')"><div class="sri-ico" style="background:#ECECEC"><i class="ti ti-device-laptop" style="color:#444"></i></div><div><div class="sri-nm">FSKTM · Lab 3</div><div class="sri-loc">Computer Lab 3 · Level 1</div></div></div>
+                    <div class="srch-item" data-keys="library perpustakaan sas library" onclick="selectMapDest('library')"><div class="sri-ico"><i class="ti ti-books"></i></div><div><div class="sri-nm">Perpustakaan SAS</div><div class="sri-loc">Sultan Abdul Samad Library</div></div></div>
+                    <div class="srch-item no-match-item hide" style="pointer-events:none;justify-content:center;color:#888;font-size:11px;padding:12px 6px;">
+                        <i class="ti ti-search-off" style="font-size:14px;color:#aaa;margin-right:5px;"></i> No locations found
+                    </div>
+                </div>
+            </div>
+            <!-- Category Pills -->
+            <div style="display:flex; gap:6px; overflow-x:auto; scrollbar-width:none;" class="map-filters-row">
+                <button class="obt" onclick="filterMapCategory('bk', this)" style="background:#fff; border-radius:14px; padding:4px 10px; font-size:11px; white-space:nowrap; border:1px solid #eaeaea; display:flex; align-items:center; gap:3px;"><i class="ti ti-door-enter" style="color:#333;"></i> Classrooms</button>
+                <button class="obt" onclick="filterMapCategory('faculty', this)" style="background:#fff; border-radius:14px; padding:4px 10px; font-size:11px; white-space:nowrap; border:1px solid #eaeaea; display:flex; align-items:center; gap:3px;"><i class="ti ti-building" style="color:#888;"></i> Faculties</button>
+                <button class="obt" onclick="filterMapCategory('library', this)" style="background:#fff; border-radius:14px; padding:4px 10px; font-size:11px; white-space:nowrap; border:1px solid #eaeaea; display:flex; align-items:center; gap:3px;"><i class="ti ti-books" style="color:#666;"></i> Services</button>
+            </div>
+        </div>
+
+        <!-- Map Viewport -->
+        <div class="map-viewport" style="flex: 1; position: relative;">
+            <!-- Green Navigation Directions Banner overlay -->
+            <div id="mapDirectionBanner" style="display:none; position:absolute; top:10px; left:14px; right:14px; background:#3A3A3A; color:#fff; border-radius:12px; padding:10px 14px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:5; align-items:center; gap:10px;">
+                <div style="width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center;"><i class="ti ti-navigation" id="bannerDirIcon" style="font-size:14px;"></i></div>
+                <div style="flex:1;">
+                    <div style="font-size:12px; font-weight:700;" id="bannerDirText">Route Active</div>
+                    <div style="font-size:10px; opacity:0.8;" id="bannerSubText">Follow path on map below</div>
+                </div>
+            </div>
+
+            <div style="width:100%; height:100%; position:relative;">
+                <!-- Outdoor SVG Map -->
+                <svg id="gMapsOutdoorSvg" viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%; object-fit:cover; display:block;">
+                    <rect width="340" height="180" fill="#E8E8E8"/>
+                    <rect x="0" y="0" width="340" height="180" fill="#E8E8E8"/>
+                    <rect x="30" y="60" width="80" height="50" rx="4" fill="#D8D8D8" stroke="#AAA" stroke-width="1"/>
+                    <text x="70" y="82" text-anchor="middle" font-size="7" fill="#3A3A3A" font-weight="700">Perpustakaan</text>
+                    <text x="70" y="91" text-anchor="middle" font-size="6" fill="#444">Sultan Abdul Samad</text>
+                    <circle cx="70" cy="104" r="4" fill="#333"/>
+                    <text x="70" y="116" text-anchor="middle" font-size="6" fill="#333" font-weight="700">START</text>
+
+                    <!-- DKAP building on map -->
+                    <rect x="240" y="25" width="80" height="50" rx="4" fill="#DDD" stroke="#BBB" stroke-width="1"/>
+                    <text x="280" y="47" text-anchor="middle" font-size="7" fill="#333" font-weight="700">DKAP</text>
+                    <text x="280" y="57" text-anchor="middle" font-size="6" fill="#3A3A3A">Dewan Kompleks</text>
+                    <text x="280" y="66" text-anchor="middle" font-size="6" fill="#3A3A3A">Akademik Pusat</text>
+                    <circle id="gMapsDkapCircle" cx="280" cy="73" r="4" fill="#4A4A4A"/>
+                    <text id="gMapsDkapText" x="280" y="85" text-anchor="middle" font-size="6" fill="#4A4A4A" font-weight="700">DEST</text>
+
+                    <!-- FSKTM building on map -->
+                    <rect x="240" y="105" width="80" height="50" rx="4" fill="#E0E0E0" stroke="#BBB" stroke-width="1"/>
+                    <text x="280" y="127" text-anchor="middle" font-size="7" fill="#444" font-weight="700">FSKTM</text>
+                    <text x="280" y="137" text-anchor="middle" font-size="6" fill="#555">Computer Science</text>
+                    <text x="280" y="146" text-anchor="middle" font-size="6" fill="#555">&amp; Info Tech</text>
+                    <circle id="gMapsFsktmCircle" cx="280" cy="151" r="4" fill="#4A4A4A" style="display:none;"/>
+                    <text id="gMapsFsktmText" x="280" y="162" text-anchor="middle" font-size="6" fill="#4A4A4A" font-weight="700" style="display:none;">DEST</text>
+
+                    <!-- Streets -->
+                    <rect x="0" y="108" width="340" height="10" fill="#D0D0D0" opacity=".5"/>
+                    <text x="170" y="116" text-anchor="middle" font-size="7" fill="#666">Persiaran Tulang Daing</text>
+                    <rect x="130" y="40" width="80" height="10" fill="#D0D0D0" opacity=".5"/>
+                    <text x="170" y="48" text-anchor="middle" font-size="7" fill="#666">Persiaran Masjid</text>
+
+                    <polyline id="gMapsRouteLine" points="" fill="none" stroke="#333" stroke-width="2.5" stroke-dasharray="5,3"/>
+                    <circle id="gMapsDotPos" cx="70" cy="104" r="5" fill="#333" stroke="#fff" stroke-width="2"/>
+                </svg>
+
+                <!-- DKAP Indoor SVG Map — 8 rooms (BK-08 to BK-15) -->
+                <svg id="gMapsIndoorSvg" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;object-fit:cover;display:none;">
+                    <rect width="340" height="200" fill="#ECECEC"/>
+                    <rect x="5" y="14" width="330" height="178" rx="6" fill="#F5F5F5" stroke="#CCC" stroke-width="1"/>
+                    <text x="170" y="10" text-anchor="middle" font-size="7" fill="#888" font-weight="600">DKAP BUILDING PLAN</text>
+                    <!-- Level 3 label -->
+                    <text x="10" y="22" text-anchor="start" font-size="6" fill="#3A3A3A" font-weight="700">LEVEL 3 · BK-12 to BK-15</text>
+                    <!-- Row 1: BK-12 to BK-15 -->
+                    <rect id="mBox_bk12" x="12" y="24" width="72" height="32" rx="3" fill="#F5F5F5" stroke="#AAA" stroke-width="1"/>
+                    <text x="48" y="43" text-anchor="middle" font-size="8" fill="#444" font-weight="600">BK-12</text>
+                    <rect id="mBox_bk13" x="92" y="24" width="72" height="32" rx="3" fill="#F5F5F5" stroke="#AAA" stroke-width="1"/>
+                    <text x="128" y="43" text-anchor="middle" font-size="8" fill="#444" font-weight="600">BK-13</text>
+                    <rect id="mBox_bk14" x="172" y="24" width="72" height="32" rx="3" fill="#F5F5F5" stroke="#AAA" stroke-width="1"/>
+                    <text x="208" y="43" text-anchor="middle" font-size="8" fill="#444" font-weight="600">BK-14</text>
+                    <rect id="mBox_bk15" x="252" y="24" width="72" height="32" rx="3" fill="#F5F5F5" stroke="#AAA" stroke-width="1"/>
+                    <text x="288" y="43" text-anchor="middle" font-size="8" fill="#444" font-weight="600">BK-15</text>
+                    <!-- Level 2 label -->
+                    <text x="10" y="61" text-anchor="start" font-size="6" fill="#3A3A3A" font-weight="700">LEVEL 2 · BK-08 to BK-11</text>
+                    <!-- Row 2: BK-08 to BK-11 -->
+                    <rect id="mBox_bk08" x="12" y="62" width="72" height="32" rx="3" fill="#F5F5F5" stroke="#AAA" stroke-width="1"/>
+                    <text x="48" y="81" text-anchor="middle" font-size="8" fill="#444" font-weight="600">BK-08</text>
+                    <rect id="mBox_bk09" x="92" y="62" width="72" height="32" rx="3" fill="#F5F5F5" stroke="#AAA" stroke-width="1"/>
+                    <text x="128" y="81" text-anchor="middle" font-size="8" fill="#444" font-weight="600">BK-09</text>
+                    <rect id="mBox_bk10" x="172" y="62" width="72" height="32" rx="3" fill="#F5F5F5" stroke="#AAA" stroke-width="1"/>
+                    <text x="208" y="81" text-anchor="middle" font-size="8" fill="#444" font-weight="600">BK-10</text>
+                    <rect id="mBox_bk11" x="252" y="62" width="72" height="32" rx="3" fill="#F5F5F5" stroke="#AAA" stroke-width="1"/>
+                    <text x="288" y="81" text-anchor="middle" font-size="8" fill="#444" font-weight="600">BK-11</text>
+                    <!-- Floor separator -->
+                    <line x1="5" y1="99" x2="335" y2="99" stroke="#CCC" stroke-width="1.5"/>
+                    <text x="10" y="106" text-anchor="start" font-size="6" fill="#666" font-weight="600">GROUND FLOOR</text>
+                    <!-- Ground rooms -->
+                    <rect id="mBox_entry" x="12" y="108" width="72" height="52" rx="3" fill="#E8E8E8" stroke="#3A3A3A" stroke-width="2"/>
+                    <text x="48" y="131" text-anchor="middle" font-size="7" fill="#2A2A2A" font-weight="700">Entrance</text>
+                    <text x="48" y="141" text-anchor="middle" font-size="6" fill="#3A3A3A">Main Door</text>
+                    <rect id="mBox_admin" x="92" y="108" width="72" height="52" rx="3" fill="#F0F0F0" stroke="#AAA" stroke-width="1"/>
+                    <text x="128" y="137" text-anchor="middle" font-size="7" fill="#444" font-weight="700">Admin</text>
+                    <rect id="mBox_lift" x="172" y="108" width="72" height="52" rx="3" fill="#F0F0F0" stroke="#AAA" stroke-width="1"/>
+                    <text x="208" y="131" text-anchor="middle" font-size="7" fill="#444" font-weight="700">Lift</text>
+                    <text x="208" y="141" text-anchor="middle" font-size="6" fill="#666">Lobby</text>
+                    <rect id="mBox_stairs" x="252" y="108" width="72" height="52" rx="3" fill="#F0F0F0" stroke="#AAA" stroke-width="1"/>
+                    <text x="288" y="137" text-anchor="middle" font-size="7" fill="#444" font-weight="700">Stairs</text>
+                    <!-- Destination pin (default BK-10) -->
+                    <circle id="gMapsIndoorDestPin" cx="208" cy="24" r="4" fill="#4A4A4A" stroke="#fff" stroke-width="1.5"/>
+                    <text id="gMapsIndoorDestPinLabel" x="208" y="40" text-anchor="middle" font-size="8" fill="#333" font-weight="700">BK-10</text>
+                    <text id="gMapsIndoorDestPinText" x="208" y="50" text-anchor="middle" font-size="6" fill="#4A4A4A">DESTINATION</text>
+                    <polyline id="gMapsIndoorRoute" points="" fill="none" stroke="#333" stroke-width="2" stroke-dasharray="4,3"/>
+                    <circle id="gMapsIndoorDot" cx="48" cy="134" r="4" fill="#333" stroke="#fff" stroke-width="1.5"/>
+                </svg>
+
+                <!-- FSKTM Indoor SVG Map -->
+                <svg id="gMapsIndoorSvgFsktm" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;object-fit:cover;display:none;">
+                    <rect width="340" height="200" fill="#F5F5F5"/>
+                    <rect x="5" y="14" width="330" height="178" rx="6" fill="#F9F9F9" stroke="#BBB" stroke-width="1"/>
+                    <text x="170" y="10" text-anchor="middle" font-size="7" fill="#444" font-weight="700">FSKTM BUILDING PLAN</text>
+                    <!-- Level 1 label -->
+                    <text x="10" y="22" text-anchor="start" font-size="6" fill="#444" font-weight="700">LEVEL 1 — LABORATORIES</text>
+                    <!-- Level 1 rooms -->
+                    <rect id="fsktm_mBox_lab1" x="12" y="24" width="72" height="32" rx="3" fill="#E8E8E8" stroke="#3A3A3A" stroke-width="1"/>
+                    <text x="48" y="39" text-anchor="middle" font-size="7" fill="#2A2A2A" font-weight="700">Lab 1</text>
+                    <text x="48" y="49" text-anchor="middle" font-size="6" fill="#3A3A3A">Computer</text>
+                    <rect id="fsktm_mBox_lab2" x="92" y="24" width="72" height="32" rx="3" fill="#E8E8E8" stroke="#3A3A3A" stroke-width="1"/>
+                    <text x="128" y="39" text-anchor="middle" font-size="7" fill="#2A2A2A" font-weight="700">Lab 2</text>
+                    <text x="128" y="49" text-anchor="middle" font-size="6" fill="#3A3A3A">Computer</text>
+                    <rect id="fsktm_mBox_lab3" x="172" y="24" width="72" height="32" rx="3" fill="#E8E8E8" stroke="#3A3A3A" stroke-width="1"/>
+                    <text x="208" y="39" text-anchor="middle" font-size="7" fill="#2A2A2A" font-weight="700">Lab 3</text>
+                    <text x="208" y="49" text-anchor="middle" font-size="6" fill="#3A3A3A">Computer</text>
+                    <rect id="fsktm_mBox_sem" x="252" y="24" width="72" height="32" rx="3" fill="#F5F5F5" stroke="#BBB" stroke-width="1"/>
+                    <text x="288" y="39" text-anchor="middle" font-size="7" fill="#444" font-weight="700">Seminar</text>
+                    <text x="288" y="49" text-anchor="middle" font-size="6" fill="#444">Room 1</text>
+                    <!-- Floor separator -->
+                    <line x1="5" y1="99" x2="335" y2="99" stroke="#BBB" stroke-width="1.5"/>
+                    <text x="10" y="106" text-anchor="start" font-size="6" fill="#444" font-weight="600">GROUND FLOOR</text>
+                    <!-- Ground rooms -->
+                    <rect id="fsktm_mBox_lobby" x="12" y="108" width="110" height="52" rx="3" fill="#EAEAEA" stroke="#4A4A4A" stroke-width="2"/>
+                    <text x="67" y="131" text-anchor="middle" font-size="7" fill="#333" font-weight="700">Lobby</text>
+                    <text x="67" y="141" text-anchor="middle" font-size="6" fill="#4A4A4A">Reception</text>
+                    <rect id="fsktm_mBox_admin" x="130" y="108" width="72" height="52" rx="3" fill="#F0F0F0" stroke="#AAA" stroke-width="1"/>
+                    <text x="166" y="137" text-anchor="middle" font-size="7" fill="#444" font-weight="700">Admin</text>
+                    <rect id="fsktm_mBox_cafe" x="210" y="108" width="52" height="52" rx="3" fill="#F5F5F5" stroke="#BBB" stroke-width="1"/>
+                    <text x="236" y="131" text-anchor="middle" font-size="7" fill="#444" font-weight="700">Café</text>
+                    <text x="236" y="141" text-anchor="middle" font-size="6" fill="#555">Ground</text>
+                    <rect id="fsktm_mBox_lift" x="270" y="108" width="30" height="52" rx="3" fill="#F0F0F0" stroke="#AAA" stroke-width="1"/>
+                    <text x="285" y="133" text-anchor="middle" font-size="6" fill="#444" font-weight="700">Lift</text>
+                    <rect id="fsktm_mBox_stairs" x="304" y="108" width="26" height="52" rx="3" fill="#F0F0F0" stroke="#AAA" stroke-width="1"/>
+                    <text x="317" y="133" text-anchor="middle" font-size="6" fill="#444" font-weight="700">Strs</text>
+                    <!-- Destination pin -->
+                    <circle id="gMapsFsktmDestPin" cx="208" cy="24" r="4" fill="#4A4A4A" stroke="#fff" stroke-width="1.5" style="display:none"/>
+                    <text id="gMapsFsktmDestPinLabel" x="208" y="20" text-anchor="middle" font-size="7" fill="#333" font-weight="700" style="display:none">Lab 3</text>
+                    <text id="gMapsFsktmDestPinText" x="208" y="13" text-anchor="middle" font-size="6" fill="#4A4A4A" style="display:none">DESTINATION</text>
+                    <polyline id="gMapsFsktmRoute" points="" fill="none" stroke="#333" stroke-width="2" stroke-dasharray="4,3"/>
+                    <circle id="gMapsFsktmDot" cx="67" cy="134" r="4" fill="#333" stroke="#fff" stroke-width="1.5"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Sliding Bottom Sheet Card -->
+        <div class="map-bottom-sheet" id="mapBottomSheet" style="background:#fff; border-top-left-radius:20px; border-top-right-radius:20px; box-shadow: 0 -4px 16px rgba(0,0,0,0.12); padding:16px 14px 76px; flex-shrink: 0; z-index: 10;">
+
+            <!-- State 1: Default (Ready for query) -->
+            <div id="mSheetDefault">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="font-size:15px; font-weight:700; color:#1A1A1A;">Universiti Putra Malaysia Map</div>
+                    <div style="font-size:11px; background:#EAEAEA; color:#4A4A4A; padding:2px 8px; border-radius:6px; font-weight:600;">GPS Active</div>
+                </div>
+                <div style="font-size:12px; color:#666; line-height:1.4; margin-bottom:12px;">Search for rooms, laboratories, or services to get turn-by-turn directions.</div>
+                <button class="pri-btn" onclick="focusMapSearch()"><i class="ti ti-search"></i> Search a Destination</button>
+            </div>
+
+            <!-- State 2: Route Planning Sheet -->
+            <div id="mSheetPlanning" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                    <div>
+                        <div style="font-size:15px; font-weight:800; color:#1A1A1A;" id="plDestTitle">Perpustakaan SAS → BK-10</div>
+                        <div style="font-size:11px; color:#888; margin-top:2px;" id="plTimeDist">11 min (850 m) · 🚶 Walking</div>
+                    </div>
+                    <button class="back-btn" onclick="exitMapNav()" style="background:#eaeaea; width:28px; height:28px;"><i class="ti ti-x" style="font-size:12px;"></i></button>
+                </div>
+
+                <!-- Toggle transit accessibility mode -->
+                <div style="display:flex; gap:8px; margin-bottom:12px;">
+                    <button class="obt sel" id="plBtnWalk" onclick="setPlMode('walk')" style="font-size:11px; padding:6px 12px; border-radius:12px; border:1px solid #eaeaea;"><i class="ti ti-walk"></i> Walk</button>
+                    <button class="obt" id="plBtnAcc" onclick="setPlMode('acc')" style="font-size:11px; padding:6px 12px; border-radius:12px; border:1px solid #eaeaea;"><i class="ti ti-wheelchair"></i> Accessible</button>
+                </div>
+
+                <div style="display:flex; gap:8px;">
+                    <button class="pri-btn" onclick="startMapNav()" style="background:#3A3A3A; flex:1;"><i class="ti ti-navigation"></i> Start Navigation</button>
+                </div>
+            </div>
+
+            <!-- State 3: Active Turn-by-Turn Navigation Sheet -->
+            <div id="mSheetNavigating" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="font-size:11px; font-weight:700; color:#444;" id="navStepTitle">OUTDOOR PHASE · Step 1 of 11</div>
+                    <div style="display:flex; gap:4px;" id="navModeToggles">
+                        <!-- Lift vs Stairs tabs for indoor -->
+                        <button class="obt sel" id="navLiftBtn" onclick="setNavMode('lift')" style="font-size:10px; padding:3px 8px; border-radius:8px; display:none; border:1px solid #eaeaea;"><i class="ti ti-elevator"></i> Lift</button>
+                        <button class="obt" id="navStairsBtn" onclick="setNavMode('stairs')" style="font-size:10px; padding:3px 8px; border-radius:8px; display:none; border:1px solid #eaeaea;"><i class="ti ti-stairs-up"></i> Stairs</button>
+                    </div>
+                </div>
+
+                <!-- Steps Progress Tracker -->
+                <div class="od-prog" id="navProgBar" style="margin-bottom:8px;"></div>
+
+                <!-- Active Instruction Step -->
+                <div class="od-step-body" style="margin-bottom:10px;">
+                    <div class="od-dir-ico walk" id="navIcoBox" style="width:30px; height:30px; border-radius:8px;"><i class="ti ti-walk" id="navIco" style="font-size:14px;"></i></div>
+                    <div style="flex:1;">
+                        <div class="od-instr" id="navInstr" style="font-size:12px; font-weight:600;">Exit the parking lot at Perpustakaan SAS</div>
+                        <div class="od-dist" id="navDist" style="font-size:10px; color:#888;">Starting point · 30 m</div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:6px;">
+                    <button id="navBackBtn" onclick="mapNavBack()" style="flex:1; border:1px solid #ccc; border-radius:18px; padding:6px; font-size:11px; cursor:pointer;"><i class="ti ti-chevron-left"></i> Back</button>
+                    <button class="pr" id="navNextBtn" onclick="mapNavNext()" style="flex:1; border:1px solid #444; background:#444; color:#fff; border-radius:18px; padding:6px; font-size:11px; cursor:pointer;">Next <i class="ti ti-chevron-right"></i></button>
+                    <button onclick="exitMapNav()" style="border:1px solid #666; background:transparent; color:#666; border-radius:18px; padding:6px 12px; font-size:11px; cursor:pointer;"><i class="ti ti-circle-x"></i> Stop</button>
+                </div>
+
+                <!-- Transition overlay inside Sheet -->
+                <div class="od-arrived-banner" id="navArriveBanner" style="margin-top:8px; display:none; padding:10px; border-radius:8px;">
+                    <i class="ti ti-circle-check" style="font-size:20px; color:#4A4A4A;"></i>
+                    <div style="flex:1;">
+                        <div class="arr-big" style="font-size:12px; font-weight:700;" id="navArriveTitle">Arrived at DKAP!</div>
+                        <div class="arr-sm" style="font-size:10px; color:#4A4A4A; margin-top:2px;" id="navArriveSub">Switching to indoor directions...</div>
+                    </div>
+                </div>
+                <button class="switch-indoor-btn" id="navSwitchIndoorBtn" onclick="mapSwitchToIndoor()" style="display:none; margin-top:8px; font-size:12px; padding:10px;"><i class="ti ti-building"></i> Continue Indoor Navigation</button>
+                <!-- Back to outdoor route (visible only in indoor phase) -->
+                <button id="navBackToOutdoorBtn" onclick="mapSwitchToOutdoor()" style="display:none; width:100%; background:transparent; border:1.5px solid #444; color:#444; border-radius:18px; padding:7px; font-size:11px; cursor:pointer; margin-top:6px; align-items:center; justify-content:center; gap:5px;"><i class="ti ti-arrow-left"></i> Back to Outdoor Route</button>
+            </div>
+
+        </div>
+
+        <!-- Bottom Nav -->
+        <div class="bnav" id="bnavMap">
+            <div class="ni" data-tab="home" onclick="navTab('home')"><i class="ti ti-home"></i><span>Home</span></div>
+            <div class="ni" data-tab="schedule" onclick="navTab('schedule')"><i class="ti ti-calendar"></i><span>Schedule</span></div>
+            <div class="ni" data-tab="translate" onclick="navTab('translate')"><i class="ti ti-language"></i><span>Translate</span></div>
+            <div class="ni act" data-tab="mapscreen" onclick="navTab('mapscreen')"><i class="ti ti-map"></i><span>Map</span></div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<script>
+let lang='en',currentDest='bk10',navMode='lift',OD_STEPS=[],IN_STEPS=[],odStep=0,inStep=0,liftOn=true,inAutoTimer=null,autoSwitchTimer=null,activePhase='out';
+const rEls={};
+
+const DESTINATIONS={
+    bk10:{title:'Perpustakaan SAS → BK-10',outdoorEnd:'DKAP',indoor:true,room:'BK-10',roomCode:'bk10',destLabel:'BK-10 · Level 2 · DKAP'},
+    bk08:{title:'Perpustakaan SAS → BK-08',outdoorEnd:'DKAP',indoor:true,room:'BK-08',roomCode:'bk08',destLabel:'BK-08 · Level 2 · DKAP'},
+    bk09:{title:'Perpustakaan SAS → BK-09',outdoorEnd:'DKAP',indoor:true,room:'BK-09',roomCode:'bk09',destLabel:'BK-09 · Level 2 · DKAP'},
+    bk11:{title:'Perpustakaan SAS → BK-11',outdoorEnd:'DKAP',indoor:true,room:'BK-11',roomCode:'bk11',destLabel:'BK-11 · Level 2 · DKAP'},
+    bk12:{title:'Perpustakaan SAS → BK-12',outdoorEnd:'DKAP',indoor:true,room:'BK-12',roomCode:'bk12',destLabel:'BK-12 · Level 3 · DKAP'},
+    bk13:{title:'Perpustakaan SAS → BK-13',outdoorEnd:'DKAP',indoor:true,room:'BK-13',roomCode:'bk13',destLabel:'BK-13 · Level 3 · DKAP'},
+    bk14:{title:'Perpustakaan SAS → BK-14',outdoorEnd:'DKAP',indoor:true,room:'BK-14',roomCode:'bk14',destLabel:'BK-14 · Level 3 · DKAP'},
+    bk15:{title:'Perpustakaan SAS → BK-15',outdoorEnd:'DKAP',indoor:true,room:'BK-15',roomCode:'bk15',destLabel:'BK-15 · Level 3 · DKAP'},
+    dkap:{title:'Perpustakaan SAS → DKAP',outdoorEnd:'DKAP',indoor:true,room:'DKAP Entrance',roomCode:'entry',destLabel:'DKAP · Main Entrance'},
+    fsktm:{title:'Perpustakaan SAS → FSKTM',outdoorEnd:'FSKTM',indoor:true,room:'FSKTM Lobby',roomCode:'fsktm_lobby',isFsktm:true,destLabel:'FSKTM · Faculty Building'},
+    fsktm_lab3:{title:'Perpustakaan SAS → FSKTM Lab 3',outdoorEnd:'FSKTM',indoor:true,room:'Lab 3',roomCode:'fsktm_lab3',isFsktm:true,destLabel:'Lab 3 · Level 1 · FSKTM'},
+    library:{title:'You are at the Library',outdoorEnd:null,indoor:false,room:'Library',roomCode:null,destLabel:'Perpustakaan SAS'}
+};
+
+// Simplified glossary dataset - descriptive definitions only
+const GLOSS={
+    bk:{term:'BK',termMy:'BK',def:'Bilik Kuliah (Lecture Room / Classroom)',defMy:'Bilik Kuliah'},
+    dkap:{term:'DKAP',termMy:'DKAP',def:'Dewan Kompleks Akademik Pusat (Central Academic Complex)',defMy:'Dewan Kompleks Akademik Pusat'},
+    fsktm:{term:'FSKTM',termMy:'FSKTM',def:'Fakulti Sains Komputer dan Teknologi Maklumat (Faculty of Computer Science and Information Technology)',defMy:'Fakulti Sains Komputer dan Teknologi Maklumat'}
+};
+
+const SIGNS={
+    bilik:{
+        my:'BILIK KULIAH 10',
+        translations:{
+            en:'LECTURE ROOM 10',
+            my:'BILIK KULIAH 10',
+            zh:'10 号教室 (Jiàoshì 10)',
+            ja:'第10講義室 (Kōgi-shitsu 10)',
+            ta:'விரிவுரை அறை 10'
+        },
+        note:'Room type: Bilik Kuliah = Lecture Room. Located on Level 2, DKAP.',
+        dest:'bk10'
+    },
+    tingkat:{
+        my:'TINGKAT 2',
+        translations:{
+            en:'LEVEL 2',
+            my:'TINGKAT 2',
+            zh:'2 层 (2 Céng)',
+            ja:'2階 (2 Kai)',
+            ta:'நிலை 2'
+        },
+        note:'Tingkat means floor/level. You are heading to the upper floor.',
+        dest:'bk10'
+    },
+    blok:{
+        my:'BLOK A — DKAP',
+        translations:{
+            en:'BLOCK A — DKAP',
+            my:'BLOK A — DKAP',
+            zh:'A 栋 — DKAP',
+            ja:'A 棟 — DKAP',
+            ta:'தொகுதி A — DKAP'
+        },
+        note:'Blok = Block. This building section contains lecture rooms BK-01 to BK-20.',
+        dest:'dkap'
+    },
+    sayap:{
+        my:'SAYAP TIMUR',
+        translations:{
+            en:'EAST WING',
+            my:'SAYAP TIMUR',
+            zh:'东翼 (Dōng Yì)',
+            ja:'東ウィング (Higashi Wingu)',
+            ta:'கிழக்கு பிரிவு'
+        },
+        note:'Sayap = Wing. The east corridor leads to BK-08 through BK-12.',
+        dest:'bk10'
+    }
+};
+
+const SCHEDULE=[
+    {time:'09:00 – 10:30 AM',course:'Data Structures (CSC 2100)',loc:'FSKTM · Lab 3',dest:'fsktm_lab3'},
+    {time:'11:00 – 12:30 PM',course:'Linear Algebra (CSC 3000)',loc:'DKAP · BK-10, Level 2',dest:'bk10',next:true},
+    {time:'2:00 – 3:30 PM',course:'Software Engineering (SWE 4001)',loc:'DKAP · BK-15, Level 3',dest:'bk15'}
+];
+
+const OD_STEPS_DKAP=[
+    {icon:'ti-walk',kind:'walk',instr:'Exit the parking lot at Perpustakaan Sultan Abdul Samad',dist:'Starting point · 30 m',dot:[70,104]},
+    {icon:'ti-arrow-right',kind:'turn',instr:'Turn right toward Persiaran Tulang Daing',dist:'20 m',dot:[90,104]},
+    {icon:'ti-arrow-left',kind:'turn',instr:'Turn left toward Persiaran Tulang Daing',dist:'72 m',dot:[110,108]},
+    {icon:'ti-arrow-right',kind:'turn',instr:'Turn right onto Persiaran Tulang Daing',dist:'59 m',dot:[150,108]},
+    {icon:'ti-arrow-left',kind:'turn',instr:'Turn left onto Persiaran Masjid',dist:'400 m',dot:[170,108]},
+    {icon:'ti-arrow-right',kind:'turn',instr:'Turn right',dist:'18 m',dot:[190,90]},
+    {icon:'ti-arrow-left',kind:'turn',instr:'Turn left',dist:'7 m',dot:[200,70]},
+    {icon:'ti-corner-right-up',kind:'turn',instr:'Slight right',dist:'160 m',dot:[215,60]},
+    {icon:'ti-arrow-left',kind:'turn',instr:'Turn left',dist:'17 m',dot:[250,55]},
+    {icon:'ti-arrow-left',kind:'turn',instr:'Turn left — destination on the right',dist:'160 m',dot:[265,55]},
+    {icon:'ti-flag',kind:'arrive',instr:'Arrived at DKAP — Dewan Kompleks Akademik Pusat',dist:'UPM, Persiaran Asam Jawa',dot:[280,55]}
+];
+
+const OD_STEPS_FSKTM=[
+    {icon:'ti-walk',kind:'walk',instr:'Exit the parking lot at Perpustakaan Sultan Abdul Samad',dist:'Starting point · 30 m',dot:[70,104]},
+    {icon:'ti-arrow-right',kind:'turn',instr:'Turn right toward Persiaran Tulang Daing',dist:'20 m',dot:[90,104]},
+    {icon:'ti-arrow-left',kind:'turn',instr:'Turn left toward Persiaran Tulang Daing',dist:'72 m',dot:[110,108]},
+    {icon:'ti-arrow-right',kind:'turn',instr:'Turn right onto Persiaran Tulang Daing',dist:'120 m',dot:[150,108]},
+    {icon:'ti-arrow-right',kind:'turn',instr:'Continue straight on Persiaran Tulang Daing',dist:'180 m',dot:[170,108]},
+    {icon:'ti-arrow-right',kind:'turn',instr:'Walk past the central intersection',dist:'90 m',dot:[190,108]},
+    {icon:'ti-corner-right-down',kind:'turn',instr:'Slight right toward FSKTM access road',dist:'110 m',dot:[210,120]},
+    {icon:'ti-arrow-left',kind:'turn',instr:'Turn left onto Faculty access lane',dist:'80 m',dot:[230,135]},
+    {icon:'ti-walk',kind:'walk',instr:'Walk toward the main lobby of FSKTM',dist:'40 m',dot:[250,135]},
+    {icon:'ti-flag',kind:'arrive',instr:'Arrived at Faculty of Computer Science & IT (FSKTM)',dist:'UPM, Faculty Road',dot:[280,135]}
+];
+
+const L2=[
+    {id:'bk08',name:'BK-08',sub:'Lecture',cls:'retail'},
+    {id:'bk09',name:'BK-09',sub:'Lecture',cls:'retail'},
+    {id:'bk10',name:'BK-10',sub:'Lecture',cls:'retail'},
+    {id:'bk11',name:'BK-11',sub:'Lecture',cls:'retail'},
+    {id:'bk12',name:'BK-12',sub:'Lecture',cls:'retail'},
+    {id:'bk13',name:'BK-13',sub:'Lecture',cls:'retail'},
+    {id:'bk14',name:'BK-14',sub:'Lecture',cls:'retail'},
+    {id:'bk15',name:'BK-15',sub:'Lecture',cls:'retail'}
+];
+const GF=[
+    {id:'entry',name:'Entrance',sub:'Main Door',cls:'study start'},
+    {id:'admin',name:'Admin',sub:'Office',cls:'admin'},
+    {id:'lift',name:'Lift',sub:'Lobby',cls:'admin'},
+    {id:'stairs',name:'Stairs',sub:'Ground',cls:'admin'}
+];
+
+// WEBCAM + LENS CONTROLS
+let webcamStream = null;
+async function startWebcam() {
+    const video = document.getElementById('webcamVideo');
+    const noCam = document.getElementById('lensNoCam');
+
+    stopWebcam();
+
+    try {
+        webcamStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment' }
+        });
+        if (video) {
+            video.srcObject = webcamStream;
+            video.style.display = 'block';
+        }
+        if (noCam) noCam.style.display = 'none';
+    } catch (err) {
+        console.warn('Camera blocked or unavailable:', err);
+        if (video) video.style.display = 'none';
+        if (noCam) noCam.style.display = 'flex';
+    }
+
+    startLensLoop();
+}
+function stopWebcam() {
+    stopLensLoop();
+    if (webcamStream) {
+        webcamStream.getTracks().forEach(track => track.stop());
+        webcamStream = null;
+    }
+    const video = document.getElementById('webcamVideo');
+    if (video) video.style.display = 'none';
+}
+
+function updateStatusBarTime() {
+    const now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    document.querySelectorAll('.status-time').forEach(el => el.textContent = `${hours}:${minutes}`);
+}
+setInterval(updateStatusBarTime, 1000);
+updateStatusBarTime();
+
+function generateIndoorRoute(destId, mode) {
+    const steps = [];
+    const isL2 = ['bk08','bk09','bk10','bk11'].includes(destId);
+    const isL3 = ['bk12','bk13','bk14','bk15'].includes(destId);
+
+    const isAcc = mode === 'acc';
+    steps.push({
+        id:'entry', floor:'G', icon: isAcc ? 'ti-wheelchair' : 'ti-door-enter', kind:'move',
+        instr: isAcc ? 'Enter via accessible ramp at main entrance' : 'Enter DKAP through the main entrance',
+        det: isAcc ? 'Ground floor · Accessible ramp' : 'Ground floor · Building entrance lobby',
+        dot: [48, 134]
+    });
+
+    if (destId === 'entry') {
+        steps.push({ id:'entry', floor:'G', icon:'ti-flag', kind:'arrive',
+            instr:'Arrived at DKAP Entrance!',
+            det:'Ground floor · Entrance lobby area', dot:[48, 118] });
+        return steps;
+    }
+
+    steps.push({ id:'admin', floor:'G', icon:'ti-arrow-right', kind:'move',
+        instr:'Walk through lobby, past the Admin office',
+        det:'Corridor hallway', dot:[128, 134] });
+
+    if (destId === 'admin') {
+        steps.push({ id:'admin', floor:'G', icon:'ti-flag', kind:'arrive',
+            instr:'Arrived at Admin Office!',
+            det:'Ground floor · Admin block', dot:[128, 134] });
+        return steps;
+    }
+
+    const exitY = 78;
+
+    if (mode === 'stairs') {
+        steps.push({ id:'stairs', floor:'G', icon:'ti-stairs-up', kind:'lift',
+            instr:'Take stairs up to Level 2',
+            det:'East staircase lobby', liftShow:true, dot:[288, 134] });
+        steps.push({ id:'stairs', floor:'L2', icon:'ti-door-exit', kind:'move',
+            instr:'Exit stairwell on Level 2',
+            det:'Level 2 corridor', dot:[288, exitY] });
+    } else {
+        const liftText = isAcc ? 'Take the accessible lift to Level 2' : 'Take the lift to Level 2';
+        const liftDet  = isAcc ? 'Accessible lift lobby' : 'Corridor lift lobby';
+        steps.push({ id:'lift', floor:'G', icon:'ti-elevator', kind:'lift',
+            instr:liftText, det:liftDet, liftShow:true, dot:[208, 134] });
+        steps.push({ id:'lift', floor:'L2', icon:'ti-door-exit', kind:'lift',
+            instr:'Exit lift on Level 2', det:'Level 2 lobby', dot:[208, exitY] });
+    }
+
+    if (isL3) {
+        const transitIco = mode === 'stairs' ? 'ti-stairs-up' : 'ti-elevator';
+        const transitInstr = mode === 'stairs'
+            ? 'Take stairs up one more floor to Level 3'
+            : (isAcc ? 'Take accessible lift up one more floor to Level 3' : 'Take lift up one more floor to Level 3');
+        const transitX = mode === 'stairs' ? 288 : 208;
+        steps.push({ id: mode === 'stairs' ? 'stairs' : 'lift', floor:'L3', icon:transitIco, kind:'lift',
+            instr:transitInstr, det:'Level 3 lobby · DKAP', dot:[transitX, 40] });
+    }
+
+    const l3Coords = { bk12:[48,40], bk13:[128,40], bk14:[208,40], bk15:[288,40] };
+    const l2Coords = { bk08:[48,78], bk09:[128,78], bk10:[208,78], bk11:[288,78] };
+    const allCoords   = {...l3Coords, ...l2Coords};
+    const [destX, destY] = allCoords[destId] || [208, 78];
+    const levelLabel = isL3 ? 'Level 3' : 'Level 2';
+    const destName = destId.replace('bk','BK-');
+    const startX = mode === 'stairs' ? 288 : 208;
+
+    if (isL2) {
+        if (destId === 'bk11' && startX !== 288) {
+            steps.push({ id:'bk11', floor:'L2', icon:'ti-arrow-right', kind:'move',
+                instr:'Walk east — BK-11 is on your left', det:'Level 2 corridor', dot:[288, 78] });
+        } else if (destId === 'bk10' && startX === 288) {
+            steps.push({ id:'bk10', floor:'L2', icon:'ti-arrow-left', kind:'move',
+                instr:'Walk west past BK-11', det:'BK-10 is next on your left', dot:[208, 78] });
+        } else if (destId === 'bk09') {
+            if (startX === 288) steps.push({ id:'bk10', floor:'L2', icon:'ti-arrow-left', kind:'move',
+                instr:'Walk west past BK-11 and BK-10', det:'Level 2 corridor', dot:[208, 78] });
+            steps.push({ id:'bk09', floor:'L2', icon:'ti-arrow-left', kind:'move',
+                instr:'Continue west — BK-09 is on your right', det:'Level 2 corridor', dot:[128, 78] });
+        } else if (destId === 'bk08') {
+            steps.push({ id:'bk10', floor:'L2', icon:'ti-arrow-left', kind:'move',
+                instr:'Walk west past BK-10', det:'Level 2 corridor', dot:[208, 78] });
+            steps.push({ id:'bk09', floor:'L2', icon:'ti-arrow-left', kind:'move',
+                instr:'Continue past BK-09', det:'Approaching BK-08', dot:[128, 78] });
+            steps.push({ id:'bk08', floor:'L2', icon:'ti-arrow-left', kind:'move',
+                instr:'BK-08 is at the end of the hall', det:'End of Level 2', dot:[48, 78] });
+        }
+    }
+
+    if (isL3) {
+        if (destId === 'bk15') {
+            if (startX !== 288) {
+                steps.push({ id:'bk15', floor:'L3', icon:'ti-arrow-right', kind:'move',
+                    instr:'Walk east — BK-15 is on your left', det:'Level 3 corridor', dot:[288, 40] });
+            }
+        } else if (destId === 'bk14') {
+            if (startX !== 208) {
+                steps.push({ id:'bk14', floor:'L3', icon:'ti-arrow-left', kind:'move',
+                    instr:'Walk west — BK-14 is on your left', det:'Level 3 corridor', dot:[208, 40] });
+            }
+        } else if (destId === 'bk13') {
+            steps.push({ id:'bk13', floor:'L3', icon:'ti-arrow-left', kind:'move',
+                instr:'Walk west — BK-13 is on your right', det:'Level 3 corridor', dot:[128, 40] });
+        } else if (destId === 'bk12') {
+            if (startX === 288) {
+                steps.push({ id:'bk13', floor:'L3', icon:'ti-arrow-left', kind:'move',
+                    instr:'Walk west past BK-14 and BK-13', det:'Level 3 corridor', dot:[128, 40] });
+            } else {
+                steps.push({ id:'bk13', floor:'L3', icon:'ti-arrow-left', kind:'move',
+                    instr:'Walk west past BK-13', det:'Level 3 corridor', dot:[128, 40] });
+            }
+            steps.push({ id:'bk12', floor:'L3', icon:'ti-arrow-left', kind:'move',
+                instr:'Continue west — BK-12 is at the end', det:'End of Level 3', dot:[48, 40] });
+        }
+    }
+
+    steps.push({ id:destId, floor:levelLabel.replace(' ',''), icon:'ti-flag', kind:'arrive',
+        instr:`Arrived at ${destName} — Your class is here!`,
+        det:`${levelLabel} · DKAP · ${destName}`, dot:[destX, destY - 12] });
+
+    return steps;
+}
+
+// FSKTM Indoor Route Step Generator
+function generateFSKTMIndoorRoute(destId, mode) {
+    const steps = [];
+
+    steps.push({ id:'fsktm_lobby', floor:'G', icon:'ti-door-enter', kind:'move',
+        instr:'Enter FSKTM through the main entrance lobby',
+        det:'Ground floor · Faculty reception', dot:[67, 134] });
+
+    if (destId === 'fsktm_lobby') {
+        steps.push({ id:'fsktm_lobby', floor:'G', icon:'ti-flag', kind:'arrive',
+            instr:'Arrived at FSKTM Lobby!', det:'Ground floor · Reception', dot:[67, 118] });
+        return steps;
+    }
+
+    steps.push({ id:'fsktm_admin', floor:'G', icon:'ti-arrow-right', kind:'move',
+        instr:'Walk past the Admin office toward the lift/stairs',
+        det:'Ground floor corridor', dot:[166, 134] });
+
+    if (mode === 'stairs') {
+        steps.push({ id:'fsktm_stairs', floor:'G', icon:'ti-stairs-up', kind:'lift',
+            instr:'Take stairs up to Level 1', det:'East staircase · FSKTM', dot:[317, 134] });
+        steps.push({ id:'fsktm_stairs', floor:'L1', icon:'ti-door-exit', kind:'move',
+            instr:'Exit stairwell on Level 1', det:'Level 1 corridor · FSKTM', dot:[317, 40] });
+    } else {
+        steps.push({ id:'fsktm_lift', floor:'G', icon:'ti-elevator', kind:'lift',
+            instr:'Take the lift to Level 1', det:'Lift lobby · FSKTM', dot:[285, 134] });
+        steps.push({ id:'fsktm_lift', floor:'L1', icon:'ti-door-exit', kind:'lift',
+            instr:'Exit lift on Level 1', det:'Level 1 corridor', dot:[285, 40] });
+    }
+
+    const labNames  = { fsktm_lab1:'Lab 1', fsktm_lab2:'Lab 2', fsktm_lab3:'Lab 3', fsktm_sem:'Seminar Room 1' };
+    const labCoords = { fsktm_lab1:[48,40], fsktm_lab2:[128,40], fsktm_lab3:[208,40], fsktm_sem:[288,40] };
+    const destName  = labNames[destId] || 'Lab';
+    const [dx, dy]  = labCoords[destId] || [208, 40];
+    const startX    = mode === 'stairs' ? 317 : 285;
+
+    if (destId === 'fsktm_sem') {
+        steps.push({ id:'fsktm_sem', floor:'L1', icon:'ti-arrow-right', kind:'move',
+            instr:'Turn right — Seminar Room 1 is on your right', det:'Level 1 · East end', dot:[288, 40] });
+    } else if (destId === 'fsktm_lab3') {
+        if (startX > 208) steps.push({ id:'fsktm_lab3', floor:'L1', icon:'ti-arrow-left', kind:'move',
+            instr:'Walk west — Lab 3 is on your left', det:'Level 1 corridor', dot:[208, 40] });
+    } else if (destId === 'fsktm_lab2') {
+        steps.push({ id:'fsktm_lab2', floor:'L1', icon:'ti-arrow-left', kind:'move',
+            instr:'Walk west past Lab 3 — Lab 2 is on your left', det:'Level 1 corridor', dot:[128, 40] });
+    } else if (destId === 'fsktm_lab1') {
+        steps.push({ id:'fsktm_lab2', floor:'L1', icon:'ti-arrow-left', kind:'move',
+            instr:'Walk west past Lab 3 and Lab 2', det:'Level 1 corridor', dot:[128, 40] });
+        steps.push({ id:'fsktm_lab1', floor:'L1', icon:'ti-arrow-left', kind:'move',
+            instr:'Continue to the end — Lab 1 is on your left', det:'End of Level 1 corridor', dot:[48, 40] });
+    }
+
+    steps.push({ id:destId, floor:'L1', icon:'ti-flag', kind:'arrive',
+        instr:`Arrived at ${destName} — Your destination is here!`,
+        det:`Level 1 · ${destName} · FSKTM`, dot:[dx, dy - 12] });
+
+    return steps;
+}
+
+
+function setLang(l){
+    lang=l;
+    document.getElementById('langEn').classList.toggle('act',l==='en');
+    document.getElementById('langMy').classList.toggle('act',l==='my');
+    document.getElementById('gpsBanner').textContent=l==='en'?'GPS fails indoors - CampusMate guides you inside buildings too.':'GPS tidak berfungsi di dalam bangunan - CampusMate membimbing anda.';
+    document.getElementById('hardFindLbl').textContent=l==='en'?'Campus Glossary & Search':'Glosari Kampus & Carian';
+    renderDefaultGlossary();
+}
+function toggleLang(){setLang(lang==='en'?'my':'en');}
+
+function navTab(id){
+    showScr(id);
+    document.querySelectorAll('.bnav .ni').forEach(n=>n.classList.toggle('act',n.dataset.tab===id));
+}
+
+function showScr(id){
+    if(autoSwitchTimer){clearTimeout(autoSwitchTimer);autoSwitchTimer=null;}
+
+    if (id === 'translate') {
+        startWebcam();
+    } else {
+        stopWebcam();
+    }
+
+    const statusbar = document.querySelector('.phone-status-bar');
+    if (statusbar) {
+        if (id === 'mapscreen' && activePhase === 'out' && document.getElementById('mSheetNavigating').style.display === 'block') {
+            statusbar.classList.add('dark-text');
+        } else if (id === 'mapscreen' && activePhase === 'in') {
+            statusbar.classList.add('dark-text');
+        } else {
+            statusbar.classList.remove('dark-text');
+        }
+    }
+
+    document.querySelectorAll('.scr').forEach(s=>s.classList.add('hid'));
+    document.getElementById(id).classList.remove('hid');
+    if(id==='schedule')renderSchedule();
+    if(id==='mapscreen') {
+        if(document.getElementById('mSheetPlanning').style.display === 'none' &&
+            document.getElementById('mSheetNavigating').style.display === 'none') {
+            exitMapNav();
+        }
+    }
+}
+
+function renderDefaultGlossary() {
+    const list = document.getElementById('glossList');
+    const box = document.getElementById('gr');
+    if (!list || !box) return;
+    list.innerHTML = '<div style="font-size:11px;color:#999;padding:6px 0;">Type an acronym to see its meaning.</div>';
+    box.classList.add('show');
+}
+
+function searchGloss(v){
+    const q=v.trim().toLowerCase();
+    const list=document.getElementById('glossList');
+    const box=document.getElementById('gr');
+    if(!q){
+        list.innerHTML='<div style="font-size:11px;color:#999;padding:6px 0;">Type an acronym to see its meaning.</div>';
+        if(box)box.classList.add('show');
+        return;
+    }
+    const matches=Object.entries(GLOSS).filter(([k,m])=>k.includes(q)||m.term.toLowerCase().includes(q)||m.def.toLowerCase().includes(q));
+    if(!matches.length){
+        list.innerHTML='<div style="font-size:11px;color:#888;padding:8px 0;">No matching terms found.</div>';
+        if(box)box.classList.add('show');
+        return;
+    }
+    list.innerHTML=matches.map(([,m])=>{
+        const term=lang==='my'?m.termMy||m.term:m.term;
+        const def=lang==='my'?m.defMy||m.def:m.def;
+        return `<div class="gloss-item" style="display:flex;flex-direction:column;"><div class="g-term" style="font-size:12px;font-weight:700;color:#333;">${term}</div><div class="g-def" style="font-size:10.5px;line-height:1.4;margin-top:2px;color:#555;">${def}</div></div>`;
+    }).join('');
+    if(box)box.classList.add('show');
+}
+
+function openMapScreen() {
+    showScr('mapscreen');
+    navTab('mapscreen');
+    exitMapNav();
+}
+
+function routeTo(dest) {
+    showScr('mapscreen');
+    navTab('mapscreen');
+    selectMapDest(dest || 'bk10');
+}
+
+function startFullRoute(){routeTo('bk10');}
+
+function animateDot(el,x,y,dur=450){
+    if(!el)return;
+    const cx=parseFloat(el.getAttribute('cx')),cy=parseFloat(el.getAttribute('cy')),t0=performance.now();
+    function frame(t){
+        const p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+        el.setAttribute('cx',cx+(x-cx)*e);
+        el.setAttribute('cy',cy+(y-cy)*e);
+        if(p<1)requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+}
+
+function mapSearchFn(v) {
+    const q=v.trim().toLowerCase(), res=document.getElementById('mapSearchRes'), clearBtn=document.getElementById('mapSearchClearBtn');
+    if(!q){
+        res.classList.remove('show');
+        if (clearBtn) clearBtn.style.display = 'none';
+        return;
+    }
+    res.classList.add('show');
+    if (clearBtn) clearBtn.style.display = 'block';
+
+    let any=false;
+    res.querySelectorAll('.srch-item[data-keys]').forEach(el=>{
+        const match=el.dataset.keys.includes(q)||el.querySelector('.sri-nm').textContent.toLowerCase().includes(q);
+        el.classList.toggle('hide',!match);
+        if(match)any=true;
+    });
+
+    const noMatch = res.querySelector('.no-match-item');
+    if (noMatch) {
+        noMatch.classList.toggle('hide', any);
+    }
+}
+function clearMapSearch() {
+    const input = document.getElementById('mapSearchInput');
+    input.value = '';
+    mapSearchFn('');
+    document.querySelectorAll('.map-filters-row button').forEach(b => b.classList.remove('sel'));
+}
+function focusMapSearch() {
+    const input = document.getElementById('mapSearchInput');
+    const res = document.getElementById('mapSearchRes');
+    const clearBtn = document.getElementById('mapSearchClearBtn');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+    if (res) {
+        res.classList.add('show');
+        res.querySelectorAll('.srch-item').forEach(el => {
+            if (el.classList.contains('no-match-item')) {
+                el.classList.add('hide');
+            } else {
+                el.classList.remove('hide');
+            }
+        });
+    }
+    if (clearBtn) {
+        clearBtn.style.display = 'none';
+    }
+    document.querySelectorAll('.map-filters-row button').forEach(b => b.classList.remove('sel'));
+}
+function filterMapCategory(cat, btn) {
+    const input = document.getElementById('mapSearchInput');
+    const targetVal = cat === 'bk' ? 'bk' : (cat === 'faculty' ? 'fsktm' : 'library');
+    const wasActive = btn && btn.classList.contains('sel');
+
+    document.querySelectorAll('.map-filters-row button').forEach(b => b.classList.remove('sel'));
+
+    if (wasActive) {
+        clearMapSearch();
+    } else {
+        if (btn) btn.classList.add('sel');
+        input.value = targetVal;
+        mapSearchFn(targetVal);
+    }
+}
+function mapSearchKeyDown(e) {
+    if (e.key === 'Enter') {
+        const resPanel = document.getElementById('mapSearchRes');
+        if (resPanel && resPanel.classList.contains('show')) {
+            const visibleItem = resPanel.querySelector('.srch-item:not(.hide):not(.no-match-item)');
+            if (visibleItem) {
+                visibleItem.click();
+            }
+        }
+    }
+}
+
+function selectMapDest(destId) {
+    clearMapSearch();
+    currentDest = destId;
+    const d = DESTINATIONS[currentDest];
+    if (!d) return;
+
+    if (destId === 'library' || d.outdoorEnd === null) {
+        document.getElementById('mSheetDefault').style.display = 'none';
+        document.getElementById('mSheetPlanning').style.display = 'none';
+        document.getElementById('mSheetNavigating').style.display = 'none';
+        document.getElementById('mSheetDefault').style.display = 'block';
+        document.getElementById('mSheetDefault').innerHTML = `
+      <div style="text-align:center;padding:12px 0;">
+        <div style="width:48px;height:48px;background:#EAEAEA;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+          <i class="ti ti-map-pin" style="font-size:22px;color:#4A4A4A;"></i>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#1A1A1A;margin-bottom:4px;">You are at ${d.destLabel}</div>
+        <div style="font-size:11px;color:#888;line-height:1.5;">This is your current location.&nbsp;Choose a different destination to navigate.</div>
+        <button class="pri-btn" onclick="focusMapSearch()" style="margin-top:12px;background:#333;">
+          <i class="ti ti-search"></i> Choose Destination
+        </button>
+      </div>`;
+        return;
+    }
+
+    activePhase = 'out';
+
+    document.getElementById('mSheetDefault').style.display = 'none';
+    document.getElementById('mSheetPlanning').style.display = 'block';
+    document.getElementById('mSheetNavigating').style.display = 'none';
+
+    document.getElementById('plDestTitle').textContent = d.title;
+
+    const isAccShort = d.roomCode === 'entry' || d.roomCode === 'admin';
+    const isFsktmDest = d.isFsktm === true;
+    const isFsktm = isFsktmDest;
+    const duration = navMode === 'acc'
+        ? (isAccShort ? '2 min' : '6 min')
+        : (isFsktm ? '9 min' : '11 min');
+    const dist = navMode === 'acc'
+        ? (isAccShort ? '80 m' : '180 m')
+        : (isFsktm ? '700 m' : '850 m');
+    document.getElementById('plTimeDist').textContent = `${duration} (${dist}) · 🚶 Walking`;
+
+    if (isFsktmDest) {
+        OD_STEPS = OD_STEPS_FSKTM;
+        document.getElementById('gMapsDkapCircle').style.display = 'none';
+        document.getElementById('gMapsDkapText').style.display = 'none';
+        document.getElementById('gMapsFsktmCircle').style.display = 'block';
+        document.getElementById('gMapsFsktmText').style.display = 'block';
+    } else {
+        OD_STEPS = OD_STEPS_DKAP;
+        document.getElementById('gMapsDkapCircle').style.display = 'block';
+        document.getElementById('gMapsDkapText').style.display = 'block';
+        document.getElementById('gMapsFsktmCircle').style.display = 'none';
+        document.getElementById('gMapsFsktmText').style.display = 'none';
+    }
+
+    document.getElementById('gMapsOutdoorSvg').style.display = 'block';
+    document.getElementById('gMapsIndoorSvg').style.display = 'none';
+    const fsktmSvg = document.getElementById('gMapsIndoorSvgFsktm');
+    if (fsktmSvg) fsktmSvg.style.display = 'none';
+
+    drawGMapsOutdoorRouteLine();
+}
+
+function setPlMode(m) {
+    navMode = m;
+    document.getElementById('plBtnWalk').classList.toggle('sel', m==='walk');
+    document.getElementById('plBtnAcc').classList.toggle('sel', m==='acc');
+
+    const d = DESTINATIONS[currentDest];
+    const isAccShort = d?.roomCode === 'entry' || d?.roomCode === 'admin';
+    const isFsktm = d?.isFsktm === true;
+    const duration = m === 'acc'
+        ? (isAccShort ? '2 min' : '6 min')
+        : (isFsktm ? '9 min' : '11 min');
+    const dist = m === 'acc'
+        ? (isAccShort ? '80 m' : '180 m')
+        : (isFsktm ? '700 m' : '850 m');
+    document.getElementById('plTimeDist').textContent = `${duration} (${dist}) · 🚶 Walking`;
+}
+
+function exitMapNav() {
+    if (autoSwitchTimer) { clearTimeout(autoSwitchTimer); autoSwitchTimer = null; }
+    odStep = 0; inStep = 0; activePhase = 'out';
+
+    document.getElementById('mSheetDefault').style.display = 'block';
+    document.getElementById('mSheetPlanning').style.display = 'none';
+    document.getElementById('mSheetNavigating').style.display = 'none';
+    document.getElementById('mapDirectionBanner').style.display = 'none';
+
+    document.getElementById('gMapsOutdoorSvg').style.display = 'block';
+    document.getElementById('gMapsIndoorSvg').style.display = 'none';
+    const fsktmSvg = document.getElementById('gMapsIndoorSvgFsktm');
+    if (fsktmSvg) fsktmSvg.style.display = 'none';
+
+    const dot = document.getElementById('gMapsDotPos');
+    if (dot) { dot.setAttribute('cx', 70); dot.setAttribute('cy', 104); }
+
+    const statusbar = document.querySelector('.phone-status-bar');
+    if (statusbar) statusbar.classList.remove('dark-text');
+}
+
+function startMapNav() {
+    odStep = 0; inStep = 0; activePhase = 'out';
+    document.getElementById('mSheetPlanning').style.display = 'none';
+    document.getElementById('mSheetNavigating').style.display = 'block';
+    document.getElementById('mapDirectionBanner').style.display = 'flex';
+    document.getElementById('gMapsOutdoorSvg').style.display = 'block';
+    document.getElementById('gMapsIndoorSvg').style.display = 'none';
+    const fsktmSvg = document.getElementById('gMapsIndoorSvgFsktm');
+    if (fsktmSvg) fsktmSvg.style.display = 'none';
+    const statusbar = document.querySelector('.phone-status-bar');
+    if (statusbar) statusbar.classList.add('dark-text');
+    updateGMapsNavUI();
+}
+
+function drawGMapsOutdoorRouteLine() {
+    const poly = document.getElementById('gMapsRouteLine');
+    if (poly && OD_STEPS.length > 0) {
+        const pts = OD_STEPS.map(s => `${s.dot[0]},${s.dot[1]}`).join(' ');
+        poly.setAttribute('points', pts);
+    }
+}
+
+function updateGMapsNavUI() {
+    if (activePhase === 'out') {
+        const s = OD_STEPS[odStep];
+        const total = OD_STEPS.length;
+
+        document.getElementById('navStepTitle').textContent = `OUTDOOR PHASE · Step ${odStep + 1} of ${total}`;
+        document.getElementById('navModeToggles').style.display = 'none';
+        document.getElementById('navSwitchIndoorBtn').style.display = 'none';
+        document.getElementById('navArriveBanner').style.display = 'none';
+
+        const prog = document.getElementById('navProgBar');
+        prog.innerHTML = '';
+        for(let i=0; i<total; i++) {
+            const p = document.createElement('div');
+            p.className = 'odp' + (i <= odStep ? ' dn' : '');
+            prog.appendChild(p);
+        }
+
+        document.getElementById('navInstr').textContent = s.instr;
+        document.getElementById('navDist').textContent = s.dist;
+        document.getElementById('navIcoBox').className = 'od-dir-ico ' + s.kind;
+        document.getElementById('navIco').className = 'ti ' + s.icon;
+
+        document.getElementById('navBackBtn').disabled = odStep === 0;
+
+        const isLast = odStep === total - 1;
+        const d = DESTINATIONS[currentDest];
+        document.getElementById('navNextBtn').innerHTML = isLast ? '<i class="ti ti-refresh"></i> Restart' : 'Next <i class="ti ti-chevron-right"></i>';
+
+        document.getElementById('bannerDirText').textContent = isLast ? `Arrived at ${d.outdoorEnd}!` : s.instr;
+        document.getElementById('bannerSubText').textContent = isLast ? 'Switch to indoor navigation' : s.dist;
+
+        if (isLast) {
+            document.getElementById('navArriveBanner').style.display = 'flex';
+            document.getElementById('navArriveTitle').textContent = `Arrived at ${d.outdoorEnd || d.room}!`;
+
+            const showIndoor = d.indoor && d.roomCode;
+            document.getElementById('navSwitchIndoorBtn').style.display = showIndoor ? 'block' : 'none';
+            if (showIndoor && autoSwitchTimer === null) {
+                autoSwitchTimer = setTimeout(() => mapSwitchToIndoor(), 2500);
+            }
+        }
+
+        const backOutBtn = document.getElementById('navBackToOutdoorBtn');
+        if (backOutBtn) backOutBtn.style.display = 'none';
+
+        const dot = document.getElementById('gMapsDotPos');
+        if (dot && s.dot) animateDot(dot, s.dot[0], s.dot[1]);
+    } else {
+        const step = IN_STEPS[inStep];
+        const total = IN_STEPS.length;
+
+        document.getElementById('navStepTitle').textContent = `INDOOR PHASE · Step ${inStep + 1} of ${total}`;
+        document.getElementById('navModeToggles').style.display = 'flex';
+        document.getElementById('navSwitchIndoorBtn').style.display = 'none';
+        document.getElementById('navArriveBanner').style.display = 'none';
+
+        document.getElementById('navLiftBtn').style.display = 'block';
+        document.getElementById('navStairsBtn').style.display = 'block';
+
+        const prog = document.getElementById('navProgBar');
+        prog.innerHTML = '';
+        for(let i=0; i<total; i++) {
+            const p = document.createElement('div');
+            p.className = 'odp' + (i <= inStep ? ' dn' : '');
+            prog.appendChild(p);
+        }
+
+        document.getElementById('navInstr').textContent = step.instr;
+        document.getElementById('navDist').textContent = step.det;
+        document.getElementById('navIcoBox').className = 'od-dir-ico ' + (step.kind === 'arrive' ? 'arrive' : 'walk');
+        document.getElementById('navIco').className = 'ti ' + step.icon;
+
+        document.getElementById('navBackBtn').disabled = inStep === 0;
+
+        const isLast = inStep === total - 1;
+        document.getElementById('navNextBtn').innerHTML = isLast ? '<i class="ti ti-refresh"></i> Restart' : 'Next <i class="ti ti-chevron-right"></i>';
+
+        const d = DESTINATIONS[currentDest];
+        document.getElementById('bannerDirText').textContent = isLast ? `Arrived at ${d.room}!` : step.instr;
+        document.getElementById('bannerSubText').textContent = isLast ? 'Destination reached successfully' : step.det;
+
+        if (isLast) {
+            document.getElementById('navArriveBanner').style.display = 'flex';
+            document.getElementById('navArriveTitle').textContent = `Arrived at ${d.room}!`;
+            document.getElementById('navArriveSub').textContent = `Classroom floor: ${step.floor}`;
+        }
+
+        const backOutBtn = document.getElementById('navBackToOutdoorBtn');
+        if (backOutBtn) backOutBtn.style.display = 'flex';
+
+        highlightIndoorRooms();
+        drawGMapsIndoorRouteLine();
+
+        const isFsktmActive = DESTINATIONS[currentDest]?.isFsktm === true;
+        const dotId = isFsktmActive ? 'gMapsFsktmDot' : 'gMapsIndoorDot';
+        const dot = document.getElementById(dotId);
+        if (dot && step.dot) animateDot(dot, step.dot[0], step.dot[1]);
+    }
+}
+
+function mapNavNext() {
+    if (activePhase === 'out') {
+        if (odStep === OD_STEPS.length - 1) {
+            if (autoSwitchTimer) clearTimeout(autoSwitchTimer);
+            odStep = 0;
+            updateGMapsNavUI();
+            return;
+        }
+        odStep++;
+        updateGMapsNavUI();
+    } else {
+        if (inStep === IN_STEPS.length - 1) {
+            inStep = 0;
+            updateGMapsNavUI();
+            return;
+        }
+        inStep++;
+        updateGMapsNavUI();
+    }
+}
+function mapNavBack() {
+    if (activePhase === 'out') {
+        if (odStep > 0) {
+            if (autoSwitchTimer) clearTimeout(autoSwitchTimer);
+            odStep--;
+            updateGMapsNavUI();
+        }
+    } else {
+        if (inStep > 0) {
+            inStep--;
+            updateGMapsNavUI();
+        }
+    }
+}
+
+function mapSwitchToIndoor() {
+    if (autoSwitchTimer) { clearTimeout(autoSwitchTimer); autoSwitchTimer = null; }
+
+    activePhase = 'in';
+    inStep = 0;
+    navMode = 'lift';
+
+    document.getElementById('navLiftBtn').classList.add('sel');
+    document.getElementById('navStairsBtn').classList.remove('sel');
+
+    const d = DESTINATIONS[currentDest];
+    const isFsktmActive = d?.isFsktm === true;
+    const destRoomId = d?.roomCode || 'bk10';
+
+    document.getElementById('gMapsOutdoorSvg').style.display = 'none';
+    const fsktmSvg = document.getElementById('gMapsIndoorSvgFsktm');
+    if (isFsktmActive) {
+        document.getElementById('gMapsIndoorSvg').style.display = 'none';
+        if (fsktmSvg) fsktmSvg.style.display = 'block';
+        IN_STEPS = generateFSKTMIndoorRoute(destRoomId, navMode);
+    } else {
+        document.getElementById('gMapsIndoorSvg').style.display = 'block';
+        if (fsktmSvg) fsktmSvg.style.display = 'none';
+        IN_STEPS = generateIndoorRoute(destRoomId, navMode);
+    }
+
+    const statusbar = document.querySelector('.phone-status-bar');
+    if (statusbar) statusbar.classList.add('dark-text');
+
+    buildIndoorGrids();
+    updateIndoorSvgPin();
+    updateGMapsNavUI();
+}
+
+function mapSwitchToOutdoor() {
+    if (autoSwitchTimer) { clearTimeout(autoSwitchTimer); autoSwitchTimer = null; }
+    activePhase = 'out';
+    odStep = OD_STEPS.length - 1;
+
+    document.getElementById('gMapsOutdoorSvg').style.display = 'block';
+    document.getElementById('gMapsIndoorSvg').style.display = 'none';
+    const fsktmSvg = document.getElementById('gMapsIndoorSvgFsktm');
+    if (fsktmSvg) fsktmSvg.style.display = 'none';
+
+    const statusbar = document.querySelector('.phone-status-bar');
+    if (statusbar) statusbar.classList.add('dark-text');
+
+    updateGMapsNavUI();
+}
+
+function setNavMode(m) {
+    navMode = m;
+    document.getElementById('navLiftBtn').classList.toggle('sel', m==='lift');
+    document.getElementById('navStairsBtn').classList.toggle('sel', m==='stairs');
+
+    const d = DESTINATIONS[currentDest];
+    const isFsktmActive = d?.isFsktm === true;
+    const destRoomId = d?.roomCode || 'bk10';
+    IN_STEPS = isFsktmActive
+        ? generateFSKTMIndoorRoute(destRoomId, m)
+        : generateIndoorRoute(destRoomId, m);
+
+    if (inStep >= IN_STEPS.length) inStep = IN_STEPS.length - 1;
+    updateGMapsNavUI();
+}
+
+function drawGMapsIndoorRouteLine() {
+    const isFsktmActive = DESTINATIONS[currentDest]?.isFsktm === true;
+    const polyId = isFsktmActive ? 'gMapsFsktmRoute' : 'gMapsIndoorRoute';
+    const poly = document.getElementById(polyId);
+    if (poly && IN_STEPS.length > 0) {
+        const pts = IN_STEPS.map(s => s.dot ? `${s.dot[0]},${s.dot[1]}` : '').filter(p => p !== '').join(' ');
+        poly.setAttribute('points', pts);
+    }
+}
+
+function updateIndoorSvgPin() {
+    const isFsktmActive = DESTINATIONS[currentDest]?.isFsktm === true;
+    const destId   = DESTINATIONS[currentDest]?.roomCode || 'bk10';
+    const destName = DESTINATIONS[currentDest]?.room || 'BK-10';
+
+    if (isFsktmActive) {
+        const fsktmRooms = ['fsktm_lab1','fsktm_lab2','fsktm_lab3','fsktm_sem'];
+        fsktmRooms.forEach(r => {
+            const box = document.getElementById(`fsktm_mBox_${r.replace('fsktm_','')}`)||document.getElementById(`fsktm_mBox_${r.replace('fsktm_','').replace('lab','lab')}`);
+            if (box) {
+                const isTarget = r === destId;
+                box.setAttribute('fill', isTarget ? '#EAEAEA' : '#E8E8E8');
+                box.setAttribute('stroke', isTarget ? '#4A4A4A' : '#3A3A3A');
+                box.setAttribute('stroke-width', isTarget ? '2' : '1');
+            }
+        });
+        const pinCoordsFsktm = {
+            fsktm_lab1:[48,24], fsktm_lab2:[128,24], fsktm_lab3:[208,24], fsktm_sem:[288,24],
+            fsktm_lobby:[67,108]
+        };
+        const pin = document.getElementById('gMapsFsktmDestPin');
+        const pinLabel = document.getElementById('gMapsFsktmDestPinLabel');
+        const pinText  = document.getElementById('gMapsFsktmDestPinText');
+        if (pin && pinCoordsFsktm[destId]) {
+            const [x,y] = pinCoordsFsktm[destId];
+            pin.setAttribute('cx',x); pin.setAttribute('cy',y);
+            pin.style.display = 'block';
+            if (pinLabel) { pinLabel.setAttribute('x',x); pinLabel.setAttribute('y',y-6); pinLabel.textContent=destName; pinLabel.style.display='block'; }
+            if (pinText)  { pinText.setAttribute('x',x);  pinText.setAttribute('y',y-14); pinText.style.display='block'; }
+        }
+        return;
+    }
+
+    const allRooms = ['bk08','bk09','bk10','bk11','bk12','bk13','bk14','bk15'];
+    allRooms.forEach(r => {
+        const box = document.getElementById(`mBox_${r}`);
+        if (box) {
+            const isTarget = r === destId;
+            box.setAttribute('fill', isTarget ? '#EAEAEA' : '#F5F5F5');
+            box.setAttribute('stroke', isTarget ? '#4A4A4A' : '#AAA');
+            box.setAttribute('stroke-width', isTarget ? '2' : '1');
+        }
+    });
+
+    const pin = document.getElementById('gMapsIndoorDestPin');
+    const pinLabel = document.getElementById('gMapsIndoorDestPinLabel');
+    const pinText  = document.getElementById('gMapsIndoorDestPinText');
+
+    const pinCoords = {
+        bk08:[48,62],  bk09:[128,62],  bk10:[208,62],  bk11:[288,62],
+        bk12:[48,24],  bk13:[128,24],  bk14:[208,24],  bk15:[288,24],
+        entry:[48,108]
+    };
+
+    if (pin && pinCoords[destId]) {
+        const [x,y] = pinCoords[destId];
+        pin.setAttribute('cx',x); pin.setAttribute('cy',y);
+        pin.style.display = 'block';
+        if (pinLabel) { pinLabel.setAttribute('x',x); pinLabel.setAttribute('y',y+16); pinLabel.textContent=destName; pinLabel.style.display='block'; }
+        if (pinText)  { pinText.setAttribute('x',x);  pinText.setAttribute('y',y+26);  pinText.style.display='block'; }
+    } else {
+        if (pin) pin.style.display = 'none';
+        if (pinText) pinText.style.display = 'none';
+        if (pinLabel) pinLabel.style.display = 'none';
+    }
+}
+
+function makeRoom(r, suffix) {
+    const el = document.createElement('div');
+    el.id = `rm_${r.id}_${suffix}`;
+    el.className = `rm ${r.cls || ''}`;
+    el.innerHTML = `<span class="rm-nm">${r.name}</span>${r.sub ? `<span class="rm-sub">${r.sub}</span>` : ''}`;
+    return el;
+}
+
+function buildIndoorGrids() {
+    ['gL2a','gGa','gGs','gL2s'].forEach(id=>{
+        const g=document.getElementById(id);
+        if(g)g.innerHTML='';
+    });
+
+    const d = DESTINATIONS[currentDest];
+    const destRoomId = d?.roomCode || 'bk10';
+    const startRoomId = 'entry';
+
+    L2.forEach(r=>{
+        let cls = 'retail';
+        if (r.id === destRoomId) cls += ' dest';
+        else if (r.id === startRoomId) cls += ' start';
+
+        const roomData = {...r, cls};
+        ['gL2a','gL2s'].forEach(id=>{
+            const g=document.getElementById(id);
+            if(g)g.appendChild(makeRoom(roomData,id==='gL2a'?'la':'ls'));
+        });
+    });
+
+    GF.forEach(r=>{
+        let cls = r.id === 'entry' ? 'study' : 'admin';
+        if (r.id === destRoomId) cls += ' dest';
+        else if (r.id === startRoomId) cls += ' start';
+
+        const roomData = {...r, cls};
+        ['gGa','gGs'].forEach(id=>{
+            const g=document.getElementById(id);
+            if(g)g.appendChild(makeRoom(roomData,id==='gGa'?'ga':'gs'));
+        });
+    });
+}
+
+function getRid(el){return el.id.replace(/^rm_/,'').replace(/_[a-z]+$/,'');}
+
+function highlightIndoorRooms() {
+    document.querySelectorAll('.rm').forEach(el=>el.classList.remove('active-s','hl'));
+    const step=IN_STEPS[inStep];
+    if(!step)return;
+    document.querySelectorAll('.rm').forEach(el=>{
+        if(getRid(el)===step.id)el.classList.add('active-s');
+    });
+}
+
+function renderSchedule(){
+    document.getElementById('schBody').innerHTML=SCHEDULE.map(s=>`<div class="sch-card"${s.next?' style="border-left-color:#4A4A4A"':''}><div class="sch-time">${s.time}${s.next?' · Up Next':''}</div><div class="sch-course">${s.course}</div><div class="sch-loc"><i class="ti ti-map-pin"></i>${s.loc}</div><button class="sch-nav-btn" onclick="routeTo('${s.dest}')"><i class="ti ti-navigation"></i> Navigate to Class</button></div>`).join('');
+}
+
+// ── GOOGLE LENS TRANSLATION ENGINE ──────────────────────────────────────
+let translateTargetLang = 'en';
+let lensInterval = null;
+let lensSignKeys = Object.keys(SIGNS);
+let lensCurrentIdx = 0;
+let lensPhase = 'scanning';
+
+function changeTranslateLang(l) {
+    translateTargetLang = l;
+    if (lensPhase === 'showing') {
+        const displayedIdx = (lensCurrentIdx - 1 + lensSignKeys.length) % lensSignKeys.length;
+        renderLensFrame(lensSignKeys[displayedIdx]);
+    }
+}
+
+function renderLensFrame(key) {
+    const s = SIGNS[key];
+    if (!s) return;
+    const layer = document.getElementById('lensArLayer');
+    const pill = document.getElementById('lensDetectedPill');
+    const wordEl = document.getElementById('lensDetectedWord');
+    const statusEl = document.getElementById('lensStatusText');
+    if (!layer) return;
+
+    const translated = s.translations[translateTargetLang] || s.translations['en'];
+    const original = s.my;
+
+    const positions = {
+        bilik:  [{top:'38%',left:'15%',w:130,ot:'BILIK',tr:translated.split(' ').slice(0,1).join(' ')},
+            {top:'52%',left:'15%',w:130,ot:'KULIAH 10',tr:translated.split(' ').slice(1).join(' ')||translated}],
+        tingkat:[{top:'44%',left:'20%',w:110,ot:'TINGKAT',tr:translated.split(' ')[0]||translated},
+            {top:'57%',left:'20%',w:60,ot:'2',tr:translated.split(' ')[1]||'2'}],
+        blok:   [{top:'40%',left:'12%',w:80,ot:'BLOK A',tr:translated.split('—')[0].trim()},
+            {top:'54%',left:'12%',w:90,ot:'DKAP',tr:(translated.split('—')[1]||'DKAP').trim()}],
+        sayap:  [{top:'43%',left:'18%',w:115,ot:'SAYAP',tr:translated.split(' ')[0]||translated},
+            {top:'57%',left:'18%',w:90,ot:'TIMUR',tr:translated.split(' ')[1]||''}]
+    };
+
+    const boxes = positions[key] || [{top:'44%',left:'15%',w:120,ot:original,tr:translated}];
+    layer.innerHTML = boxes.map(b=>{
+        if(!b.tr) return '';
+        return `<div class="lens-word-box" style="top:${b.top};left:${b.left};width:${b.w}px;height:22px;"></div>
+            <div class="lens-ar-bubble" style="top:calc(${b.top} + 26px);left:${b.left};">
+              <div class="lens-ar-original">${b.ot}</div>
+              <div class="lens-ar-translated">${b.tr}</div>
+            </div>`;
+    }).join('');
+
+    if(pill){ pill.style.display='flex'; }
+    if(wordEl){ wordEl.textContent = original; }
+    if(statusEl){ statusEl.innerHTML = `Translated to <b>${getLangName(translateTargetLang)}</b>`; }
+}
+
+function getLangName(code){
+    return {en:'English',my:'Malay',zh:'Chinese',ja:'Japanese',ta:'Tamil'}[code]||code;
+}
+
+function startLensLoop() {
+    stopLensLoop();
+    const layer = document.getElementById('lensArLayer');
+    const sweep = document.getElementById('lensSweep');
+    const pill  = document.getElementById('lensDetectedPill');
+    const statusEl = document.getElementById('lensStatusText');
+
+    function doScan() {
+        lensPhase = 'scanning';
+        if(layer) layer.innerHTML = '';
+        if(pill)  pill.style.display = 'none';
+        if(sweep) sweep.style.display = 'block';
+        if(statusEl) statusEl.innerHTML = 'Scanning for signboards…';
+
+        setTimeout(() => {
+            if(sweep) sweep.style.display = 'none';
+            lensPhase = 'showing';
+            renderLensFrame(lensSignKeys[lensCurrentIdx]);
+            lensCurrentIdx = (lensCurrentIdx + 1) % lensSignKeys.length;
+        }, 1400);
+    }
+
+    doScan();
+    lensInterval = setInterval(doScan, 4000);
+}
+
+function stopLensLoop() {
+    if (lensInterval) { clearInterval(lensInterval); lensInterval = null; }
+    const layer = document.getElementById('lensArLayer');
+    const sweep = document.getElementById('lensSweep');
+    if(layer) layer.innerHTML = '';
+    if(sweep) sweep.style.display = 'none';
+}
+
+function setMTab(t) {
+    const tabOut = document.getElementById('mTabOut');
+    const tabIn = document.getElementById('mTabIn');
+    const outdoorSvg = document.getElementById('mOutdoorSvg');
+    const floorBar = document.getElementById('mFloorBar');
+    const indoorSvgG = document.getElementById('mIndoorSvgG');
+    const indoorSvgL2 = document.getElementById('mIndoorSvgL2');
+    if (tabOut) tabOut.classList.toggle('act', t==='out');
+    if (tabIn) tabIn.classList.toggle('act', t==='in');
+    if (outdoorSvg) outdoorSvg.style.display = t==='out'?'block':'none';
+    if (floorBar) floorBar.style.display = t==='in'?'flex':'none';
+    if (t === 'out') {
+        if (indoorSvgG) indoorSvgG.style.display = 'none';
+        if (indoorSvgL2) indoorSvgL2.style.display = 'none';
+    } else {
+        setMFloor('G');
+    }
+}
+function setMFloor(f) {
+    const tabG = document.getElementById('mFloorTabG');
+    const tabL2 = document.getElementById('mFloorTabL2');
+    const svgG = document.getElementById('mIndoorSvgG');
+    const svgL2 = document.getElementById('mIndoorSvgL2');
+    if (tabG) tabG.classList.toggle('act', f==='G');
+    if (tabL2) tabL2.classList.toggle('act', f==='L2');
+    if (svgG) svgG.style.display = f==='G'?'block':'none';
+    if (svgL2) svgL2.style.display = f==='L2'?'block':'none';
+}
+
+navMode = 'walk';
+setLang('en');
+exitMapNav();
+renderSchedule();
+</script>
+</body>
+</html>
